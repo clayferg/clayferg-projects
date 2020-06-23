@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * Shows a random group of my favorite things.
  */
 function addFavoriteThing() {
   const facts =
