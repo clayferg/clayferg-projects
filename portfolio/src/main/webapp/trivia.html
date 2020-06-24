@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>My Portfolio Blog</title>
     <link rel="stylesheet" href="style.css">
+    <script> function returnRandomDate() { 
+        var date = new Date(Math.floor(Math.random()*2021), Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
+        Math.floor(Math.random()*60), Math.floor(Math.random()*60), Math.floor(Math.random()*60));
+        return date; 
+        }
+    </script>    
   </head>
   <body>
     <h1 style="text-align:center;">Portfolio Trivia</h1>
@@ -20,39 +26,39 @@
         <tr>
             <td> Mom
             <td> 19/20
-            <td id="Mom's Date"> 
+            <td id="Mom-Date"> <script> document.getElementById("Mom-Date").innerHTML = returnRandomDate(); </script> 
         <tr> 
             <td> Dad
             <td> 17/20
-            <td id="Dad's Date"> 
+            <td id="Dad-Date"> <script> document.getElementById("Dad-Date").innerHTML = returnRandomDate(); </script>
         <tr>
             <td> Grandma
             <td> 15/20
-            <td id="Grandma's Date">  
+            <td id="Grandma-Date">  <script> document.getElementById("Grandma-Date").innerHTML = returnRandomDate(); </script>
         <tr> 
             <td> Camp Counselor
             <td> 13/20
-            <td id="Camp Counselor's Date">  
+            <td id="Camp-Date">  <script> document.getElementById("Camp-Date").innerHTML = returnRandomDate(); </script>
         <tr>
             <td> Sister
             <td> 12/20
-            <td id="Sister's Date">  
+            <td id="Sister-Date">  <script> document.getElementById("Sister-Date").innerHTML = returnRandomDate(); </script>
         <tr> 
             <td> Neighbor's Dog
             <td> 10/20
-            <td id="Dog's Date"> 
+            <td id="Dog-Date"> <script> document.getElementById("Dog-Date").innerHTML = returnRandomDate(); </script>
         <tr>
             <td> Clayton Ferguson (it's hard to know yourself)
             <td> 8/20
-            <td id="My Date">  
+            <td id="My-Date"> <script> document.getElementById("My-Date").innerHTML = returnRandomDate(); </script> 
         <tr> 
             <td> Siri
             <td> 5/20
-            <td id="Siri's Date">   
+            <td id="Siri-Date"> <script> document.getElementById("Siri-Date").innerHTML = returnRandomDate(); </script>
         <tr> 
             <td> A Fallen Tree Branch
             <td> 1/20
-            <td id="Branch's Date">                             
+            <td id="Branch-Date"> <script> document.getElementById("Branch-Date").innerHTML = returnRandomDate(); </script>                           
     </table>    
 	
      <nav style="text-align:center"> 
