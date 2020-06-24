@@ -9,13 +9,21 @@
         Math.floor(Math.random()*60), Math.floor(Math.random()*60), Math.floor(Math.random()*60));
         return date; 
         }
-    </script>    
+    </script>
+    <script src="triviaQuestions.js"></script>       
   </head>
   <body>
+   
+   
     <h1 style="text-align:center;">Portfolio Trivia</h1>
     <h2 style="text-align:center;"> Who is Clayton Ferguson? Let's find out. </h2>
 
-    <p style="text-align:center" id="pointTracker">Your Current Score: 0/0 </p>
+    <p style="text-align:center" id="pointTracker"></p>
+
+    <script> 
+        var response = confirm("Do you want to do some trivia?");
+        triviaQuestions(response); 
+    </script>
 
     <h2 style="text-align:center; font-size:100px"> <strong> Leaderboard: </strong> </h2> 
     <table style="width:100%">
@@ -59,8 +67,8 @@
             <td> A Fallen Tree Branch
             <td> 1/10
             <td id="Branch-Date"> <script> document.getElementById("Branch-Date").innerHTML = returnRandomDate(); </script>                           
-    </table>    
-	
+    </table>  
+
      <nav style="text-align:center"> 
         <a href="index.html"> Home Page |</a>
         <a href="aboutMe.html"> About Me |</a>
