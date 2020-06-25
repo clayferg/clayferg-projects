@@ -11,15 +11,15 @@
         }
     </script>
     <script> function askQuestion(num) {
-        var answer = prompt("Question " + num, "No Answer");
+        var answer = prompt(questions[num - 1], "No Answer");
             document.getElementById("userAnswer" + num).innerHTML = answer; 
-            if (answer.toUpperCase() === ("Answer " + num).toUpperCase()) {
+            if (answer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
                  document.getElementById("userAnswer" + num).style.color = "green";
                  document.getElementById("correctAnswers").innerHTML++; 
             } else {
                 document.getElementById("userAnswer" + num).style.color = "red";
             }
-            document.getElementById("Ans" + num).innerHTML = "Answer " + num;
+            document.getElementById("Ans" + num).innerHTML = answers[num - 1];
             document.getElementById("totalAsked").innerHTML++; 
             if (document.getElementById("totalAsked").innerHTML == 10) {
                 alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
@@ -29,7 +29,12 @@
             document.getElementById("button" + num).onclick = ""; 
         }
     </script>   
-   
+   <script>
+       var questions = ["Question1", "Question2", "Question3", "Question4", "Question5", "Question6",
+       "Question7", "Question8", "Question9", "Question10"]; 
+       var answers = ["Answer1", "Answer2", "Answer3", "Answer4", "Answer5", "Answer6", "Answer7", 
+       "Answer8", "Answer9", "Answer10"]; 
+    </script> 
    <!-- I adpated the code below from this site
         https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard
         I wasn't sure if I needed to cite it, so I just wanted to be safe.
