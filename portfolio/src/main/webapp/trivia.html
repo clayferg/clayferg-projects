@@ -17,10 +17,12 @@
             document.getElementById("Q1").innerHTML = answer; 
             if (answer.toUpperCase() === "Answer 1".toUpperCase()) {
                  document.getElementById("Q1").style.color = "green";
+                 document.getElementById("correctAnswers").innerHTML++; 
             } else {
                 document.getElementById("Q1").style.color = "red";
             }
             document.getElementById("Ans1").innerHTML = "Answer 1";
+            document.getElementById("totalAsked").innerHTML++; 
             document.getElementById("button1").onclick = ""; 
             break; 
             case 2:
@@ -170,7 +172,8 @@
     <p id="Q10"></p>
     <p id="Ans10"></p>
 
-    <p style="text-align:center" id="pointTracker"></p>
+    <p style="text-align:center"> <strong> Your Score: </strong>
+        <span id="correctAnswers">0</span> / <span id="totalAsked">0</span></p> 
 <!--
     <script> 
         var response = confirm("Do you want to do some trivia?");
