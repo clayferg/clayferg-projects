@@ -6,8 +6,46 @@
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <!--
+        Adapted from: 
+        https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_topnav
+    -->
+    <style> 
+        .topnav {
+        overflow: hidden;
+        background-color: #333;
+        }
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
   </head>
   <body>
+      <!--
+        Adapted from: 
+        https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_topnav
+    -->
+    <div class="topnav">
+        <a class="active" href="index.html">Home</a>
+        <a href="photoGallery.html">Photo Gallery</a>
+        <a href="trivia.html">Trivia</a>
+        <a href="aboutMe.html">About</a>
+        <a href="blog.html">Blog</a>
+    </div>
+
     <div id="content">
       <h1 style="text-align:center;">Clayton Ferguson's Portfolio!!!</h1>
       <img src="/Images/NicePicture.jpeg">
@@ -17,10 +55,6 @@
       <button onclick="addFavoriteThing()">The Favorite Things Button</button>
       <div id="greeting-container"></div>
     </div>
-
-    <button onclick="document.location='photoGallery.html'"> Check Out The Photo Gallery!</button> 
-    <button onclick="document.location='blog.html'"> Check Out The Blogs!</button> 
-    <button onclick="document.location='aboutMe.html'"> Learn About Me!</button> 
 
     <h2> List of Projects </h2>
     <ul > 
