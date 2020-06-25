@@ -13,7 +13,15 @@
     <script> function askQuestion(num) {
         switch(num){
             case 1: 
-            return "Question 1"
+            var answer = prompt("Question 1", "No Answer");
+            document.getElementById("Q1").innerHTML = answer; 
+            if (answer.toUpperCase() === "Answer 1".toUpperCase()) {
+                 document.getElementById("Q1").style.color = "green";
+            } else {
+                document.getElementById("Q1").style.color = "red";
+            }
+            document.getElementById("Ans1").innerHTML = "Answer 1";
+            break; 
             case 2:
             return "Question 2"
             case 3:
