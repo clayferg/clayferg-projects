@@ -21,6 +21,7 @@
                 document.getElementById("Q1").style.color = "red";
             }
             document.getElementById("Ans1").innerHTML = "Answer 1";
+            document.getElementById("button1").onclick = ""; 
             break; 
             case 2:
             return "Question 2"
@@ -58,6 +59,7 @@
     <h1 style="text-align:center;">Portfolio Trivia</h1>
     <h2 style="text-align:center;"> Who is Clayton Ferguson? Let's find out. </h2>
 
+    <button onclick="askQuestion(1)" id="button1"> Question 1 </button>
     <p id="Q1"></p>
     <p id="Ans1"></p>
     <p id="Q2"></p>
