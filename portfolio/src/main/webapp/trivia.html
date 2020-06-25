@@ -22,7 +22,8 @@
             document.getElementById("Ans" + num).innerHTML = "Answer " + num;
             document.getElementById("totalAsked").innerHTML++; 
             if (document.getElementById("totalAsked").innerHTML == 10) {
-                alert("start-Update");
+                alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
+                " / 10"); 
                 leaderboardUpdate(); 
             } 
             document.getElementById("button" + num).onclick = ""; 
@@ -46,8 +47,7 @@
     </script>
     <script> 
         function leaderboardUpdate() {
-            alert("we made it");
-            var name = prompt("What should your username be?", ""); 
+            var name = prompt("What should your leaderboard username be?", ""); 
             var currentDate = new Date(); 
             var leaderboard = [
             {username: "Mom", score: 9, date: document.getElementById("Date1").innerHTML} ,
