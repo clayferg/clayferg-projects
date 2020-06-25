@@ -2,17 +2,49 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
+      <h1 style="text-align:center;">Clayton Ferguson's Portfolio!!!</h1>
+      <img src="/Images/NicePicture.jpeg">
+      <p>Yep, this is my portfolio. Please, try to contain your excitement.</p>
+      <p>I'm a rising sophomore at Princeton University, I play basketball and make beats in my free time, and I really like television comedies.</p>
+      <p>Click here to see some of my favorite things:</p>
+      <button onclick="addFavoriteThing()">The Favorite Things Button</button>
       <div id="greeting-container"></div>
     </div>
+
+    <button onclick="document.location='photoGallery.html'"> Check Out The Photo Gallery!</button> 
+    <button onclick="document.location='blog.html'"> Check Out The Blogs!</button> 
+    <button onclick="document.location='aboutMe.html'"> Learn About Me!</button> 
+
+    <h1 style="text-align:center;"> Relevant Sites </h1>
+    <p style="text-align:center;"> <strong style="text-align:center;"> Github: </strong> <a href="https://github.com/clayferg"  target="_blank"> clayferg </a> </p>
+    <!-- More sites to come -->
+
+    <h2> List of Projects </h2>
+    <ul > 
+        <li> Summer research work in origin managing data for electrical capacitors to be used in drones, cars, or wearable technologies  </li>
+        <li> Personal code to match numbers 1-8 on keyboard to pitch frequencies based on user input of root note and scale type </li>
+        <li> <a href="https://www.cs.princeton.edu/courses/archive/spring20/cos226/assignments.php"> Projects from COS 226 Algorithms and Data Structures Course </a> </li>
+    </ul>
+
+    <nav style="text-align:center"> 
+        <a href="index.html"> Home Page |</a>
+        <a href="aboutMe.html"> About Me |</a>
+        <a href="photoGallery.html"> Photo Gallery |</a>
+        <a href="blog.html"> Blogs |</a>
+        <a href="trivia.html"> Trivia</a>
+	</nav>
+    <p><br></p> 
+    <address> 
+    Written by Clayton Ferguson <br>
+    Email: <a href="mailto:clayferg@google.com";> clayferg@google.com </a> <br>
+    Home Address: Eh, let's stick with the email for now 
+    </address>
   </body>
 </html>
