@@ -16,24 +16,21 @@
  * Shows random facts about me until there are none left
  */
 const facts =
-      ['My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack Horseman (Netflix). You do not have to watch them, but you also kind of do.',  
-       "My favorite albums are Fulfillingness' First Finale (Stevie Wonder), Because the Internet (Childish Gambino), To Pimp A Butterfly (Kendrick Lamar), 2014 Forrest Hills Drive (J Cole), \
-       and Acid Rap (Chance The Rapper).",
-       'My favorite movies are Get Out, The Artist, and Sorry To Bother You.',
-       'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak (oops, you knew that already), favorite color - blue!'];
-
+  ['My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack Horseman (Netflix). You do not have to watch them, but you also kind of do.',  
+  "My favorite albums are Fulfillingness' First Finale (Stevie Wonder), Because the Internet (Childish Gambino), To Pimp A Butterfly (Kendrick Lamar), 2014 Forrest Hills Drive (J Cole), \
+  and Acid Rap (Chance The Rapper).",
+  'My favorite movies are Get Out, The Artist, and Sorry To Bother You.',
+  'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak (oops, you knew that already), favorite color - blue!'];
 function addFavoriteThing() {
   const factContainer = document.getElementById('greeting-container');
   if (facts.length!=0) {
-
   // Pick a random fact.
   var randomNumber = Math.floor(Math.random() * facts.length); 
   const fact = facts[randomNumber];
-
   // Add it to the page and remove it from the list
   factContainer.innerText = fact;
   facts.splice(randomNumber,1); 
   } else {
-      factContainer.innerText = "That's all the info you get for now...";
+    factContainer.innerText = "That's all the info you get for now...";
   }
 }
