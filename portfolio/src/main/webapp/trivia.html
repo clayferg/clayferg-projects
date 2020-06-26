@@ -2,43 +2,73 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Clayton Portfolio Trivia</title>
+    <title>Clayton's Portfolio Trivia</title>
     <link rel="stylesheet" href="style.css">
-    <script> function returnRandomDate() { 
-        var date = new Date(Math.floor(Math.random()*2021), Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
+    <script> 
+        // To make the leaderboard more realistic, this function creates random dates for all the names
+        function returnRandomDate() { 
+        var date = new Date(2001 + Math.floor(Math.random()*20), Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
         Math.floor(Math.random()*60), Math.floor(Math.random()*60), Math.floor(Math.random()*60));
         return date; 
         }
     </script>
-    <script> function askQuestion(num) {
-        var answer = prompt(questions[num - 1], "No Answer");
-            document.getElementById("userAnswer" + num).innerHTML = answer; 
-            if (answer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
-                 document.getElementById("userAnswer" + num).style.color = "green";
-                 document.getElementById("correctAnswers").innerHTML++; 
-            } else {
-                document.getElementById("userAnswer" + num).style.color = "red";
-            }
-            document.getElementById("Ans" + num).innerHTML = answers[num - 1];
-            document.getElementById("totalAsked").innerHTML++; 
-            if (document.getElementById("totalAsked").innerHTML == 10) {
-                alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
-                " / 10"); 
-                leaderboardUpdate(); 
-            } 
-            document.getElementById("button" + num).onclick = ""; 
+    <script> 
+        // Function allows user to see their response, an explanation of the correct answer, and the correct answer
+        function askQuestion(num) {
+        var userAnswer = prompt(questions[num - 1], "");
+        if (userAnswer === "") {
+            userAnswer = "XXX"
+        }
+        document.getElementById("userAnswer" + num).innerHTML = userAnswer; 
+        if (userAnswer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
+            document.getElementById("userAnswer" + num).style.color = "green";
+            document.getElementById("correctAnswers").innerHTML++; 
+            document.getElementById("Explanation" + num).innerHTML = moreInfoRight[num - 1]; 
+        } else {
+            document.getElementById("userAnswer" + num).style.color = "red";
+            document.getElementById("Explanation" + num).innerHTML = moreInfoWrong [num -1];
+        }
+        document.getElementById("Ans" + num).innerHTML = "Answer: " + answers[num - 1];
+        document.getElementById("totalAsked").innerHTML++; 
+        if (document.getElementById("totalAsked").innerHTML == 10) {
+            alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
+            " / 10"); 
+            leaderboardUpdate(); 
+        } 
+        document.getElementById("button" + num).onclick = ""; 
         }
     </script>   
-   <script>
-       var questions = ["Question1", "Question2", "Question3", "Question4", "Question5", "Question6",
-       "Question7", "Question8", "Question9", "Question10"]; 
-       var answers = ["Answer1", "Answer2", "Answer3", "Answer4", "Answer5", "Answer6", "Answer7", 
-       "Answer8", "Answer9", "Answer10"]; 
+    <script>
+        // parallel arrays holding information for the askQuestions function
+       var questions = ["Easy first one: What's my favorite color?", "What was my first job?", 
+       "What's my favorite season?", "What's my middle name?", "What's my favorite animal?", 
+       "Which of the following can I do: Backflip, Juggle, Wiggle ears?",
+       "Which of the following can I not do: Snowboard, Sing along to any Hamilton song, Cry on cue?",
+       "What was my high school basketball team's final win-loss record (21 total games)?", 
+       "What's my favorite Disney movie?", "What's my super power of choice?"]; 
+
+       var answers = ["Blue", "Google STEP Intern", "Spring", "Alex", "Panda", "Juggle", "Cry on cue", 
+       "2-19", "Aladdin", "Super Speed"]; 
+
+       var moreInfoWrong = ["It's on the home page, pay attention!", "Nope, this is my first one.", 
+       "Good guess, but spring has my birthday, flowers blooming, and the end of semesters.", 
+       "My dad has the same first name as me, so this is what I'm called around the house.",
+       "How dare you write anything else...", "I wish I could do the others.", "Nice try!", 
+       "Yeah, I wouldn't have guessed it either.", "Aladdin >>>", "I could see that being useful though, fair guess."]
+
+       var moreInfoRight = ["Correct, it was written on the home page!", "Yep, this is the first one.", 
+       "Correct, spring has my birthday, flowers blooming, and the end of semesters.", 
+       "My dad has the same first name as me, so this is what I'm called around the house.",
+       "Do I really have to explain myself?", "I'm not great at it, but yep!", "If only I could",
+       "I guess you can tell why I went into computer science.", "Objectively the best.", 
+       "It's just so practical."]
     </script> 
-   <!-- I adpated the code below from this site
+    <!-- 
+        I adpated the code below from this site
         https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard
         I wasn't sure if I needed to cite it, so I just wanted to be safe.
-        -->
+        Gives a mechanism for sorting the objects in the leaderboard array. 
+    -->
     <script>
         function compareHelper(a,b) {
             if (a.score > b.score) {
@@ -96,7 +126,7 @@
             color: black;
         }
         .topnav a.active {
-            background-color: #4CAF50;
+            background-color: blue;
             color: white;
         }
     </style>
@@ -119,33 +149,43 @@
 
     <button onclick="askQuestion(1)" id="button1"> Question 1 </button>
     <p id="userAnswer1"></p>
+    <p id="Explanation1"></p>
     <p id="Ans1"></p>
     <button onclick="askQuestion(2)" id="button2"> Question 2 </button>
     <p id="userAnswer2"></p>
+    <p id="Explanation2"></p>
     <p id="Ans2"></p>
     <button onclick="askQuestion(3)" id="button3"> Question 3 </button>
     <p id="userAnswer3"></p>
+    <p id="Explanation3"></p>
     <p id="Ans3"></p>
     <button onclick="askQuestion(4)" id="button4"> Question 4 </button>
     <p id="userAnswer4"></p>
+    <p id="Explanation4"></p>
     <p id="Ans4"></p>
     <button onclick="askQuestion(5)" id="button5"> Question 5 </button>
     <p id="userAnswer5"></p>
+    <p id="Explanation5"></p>
     <p id="Ans5"></p>
     <button onclick="askQuestion(6)" id="button6"> Question 6 </button>
     <p id="userAnswer6"></p>
+    <p id="Explanation6"></p>
     <p id="Ans6"></p>
     <button onclick="askQuestion(7)" id="button7"> Question 7 </button>
     <p id="userAnswer7"></p>
+    <p id="Explanation7"></p>
     <p id="Ans7"></p>
     <button onclick="askQuestion(8)" id="button8"> Question 8 </button>
     <p id="userAnswer8"></p>
+    <p id="Explanation8"></p>
     <p id="Ans8"></p>
     <button onclick="askQuestion(9)" id="button9"> Question 9 </button>
     <p id="userAnswer9"></p>
+    <p id="Explanation9"></p>
     <p id="Ans9"></p>
     <button onclick="askQuestion(10)" id="button10"> Question 10 </button>
     <p id="userAnswer10"></p>
+    <p id="Explanation10"></p>
     <p id="Ans10"></p>
 
     <p style="text-align:center"> <strong> Your Score: </strong>
