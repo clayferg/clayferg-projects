@@ -5,14 +5,16 @@
     <title>Clayton's Portfolio Trivia</title>
     <link rel="stylesheet" href="style.css">
     <script> 
-        /* To make the leaderboard more realistic, this function creates random dates for all the names*/ 
+        // To make the leaderboard more realistic, this function creates random dates for all the names
         function returnRandomDate() { 
         var date = new Date(2001 + Math.floor(Math.random()*20), Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
         Math.floor(Math.random()*60), Math.floor(Math.random()*60), Math.floor(Math.random()*60));
         return date; 
         }
     </script>
-    <script> function askQuestion(num) {
+    <script> 
+        // Function allows user to see their response, an explanation of the correct answer, and the correct answer
+        function askQuestion(num) {
         var userAnswer = prompt(questions[num - 1], "");
         if (userAnswer === "") {
             userAnswer = "XXX"
@@ -36,20 +38,24 @@
         document.getElementById("button" + num).onclick = ""; 
         }
     </script>   
-   <script>
+    <script>
+        // parallel arrays holding information for the askQuestions function
        var questions = ["Easy first one: What's my favorite color?", "What was my first job?", 
        "What's my favorite season?", "What's my middle name?", "What's my favorite animal?", 
        "Which of the following can I do: Backflip, Juggle, Wiggle ears?",
        "Which of the following can I not do: Snowboard, Sing along to any Hamilton song, Cry on cue?",
        "What was my high school basketball team's final win-loss record (21 total games)?", 
        "What's my favorite Disney movie?", "What's my super power of choice?"]; 
+
        var answers = ["Blue", "Google STEP Intern", "Spring", "Alex", "Panda", "Juggle", "Cry on cue", 
        "2-19", "Aladdin", "Super Speed"]; 
+
        var moreInfoWrong = ["It's on the home page, pay attention!", "Nope, this is my first one.", 
        "Good guess, but spring has my birthday, flowers blooming, and the end of semesters.", 
        "My dad has the same first name as me, so this is what I'm called around the house.",
        "How dare you write anything else...", "I wish I could do the others.", "Nice try!", 
        "Yeah, I wouldn't have guessed it either.", "Aladdin >>>", "I could see that being useful though, fair guess."]
+
        var moreInfoRight = ["Correct, it was written on the home page!", "Yep, this is the first one.", 
        "Correct, spring has my birthday, flowers blooming, and the end of semesters.", 
        "My dad has the same first name as me, so this is what I'm called around the house.",
@@ -57,10 +63,12 @@
        "I guess you can tell why I went into computer science.", "Objectively the best.", 
        "It's just so practical."]
     </script> 
-   <!-- I adpated the code below from this site
+    <!-- 
+        I adpated the code below from this site
         https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard
         I wasn't sure if I needed to cite it, so I just wanted to be safe.
-        -->
+        Gives a mechanism for sorting the objects in the leaderboard array. 
+    -->
     <script>
         function compareHelper(a,b) {
             if (a.score > b.score) {
