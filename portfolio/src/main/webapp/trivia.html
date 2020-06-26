@@ -13,9 +13,9 @@
         }
     </script>
     <script> function askQuestion(num) {
-        var answer = prompt(questions[num - 1], "No Answer");
-            document.getElementById("userAnswer" + num).innerHTML = answer; 
-            if (answer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
+        var userAnswer = prompt(questions[num - 1], "");
+            document.getElementById("userAnswer" + num).innerHTML = userAnswer; 
+            if (userAnswer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
                  document.getElementById("userAnswer" + num).style.color = "green";
                  document.getElementById("correctAnswers").innerHTML++; 
                  document.getElementById("Explanation" + num).innerHTML = moreInfoRight[num - 1]; 
