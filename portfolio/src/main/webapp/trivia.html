@@ -14,23 +14,26 @@
     </script>
     <script> function askQuestion(num) {
         var userAnswer = prompt(questions[num - 1], "");
-            document.getElementById("userAnswer" + num).innerHTML = userAnswer; 
-            if (userAnswer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
-                 document.getElementById("userAnswer" + num).style.color = "green";
-                 document.getElementById("correctAnswers").innerHTML++; 
-                 document.getElementById("Explanation" + num).innerHTML = moreInfoRight[num - 1]; 
-            } else {
-                document.getElementById("userAnswer" + num).style.color = "red";
-                document.getElementById("Explanation" + num).innerHTML = moreInfoWrong [num -1];
-            }
-            document.getElementById("Ans" + num).innerHTML = answers[num - 1];
-            document.getElementById("totalAsked").innerHTML++; 
-            if (document.getElementById("totalAsked").innerHTML == 10) {
-                alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
-                " / 10"); 
-                leaderboardUpdate(); 
-            } 
-            document.getElementById("button" + num).onclick = ""; 
+        if (userAnswer === "") {
+            userAnswer = "XXX"
+        }
+        document.getElementById("userAnswer" + num).innerHTML = userAnswer; 
+        if (userAnswer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
+            document.getElementById("userAnswer" + num).style.color = "green";
+            document.getElementById("correctAnswers").innerHTML++; 
+            document.getElementById("Explanation" + num).innerHTML = moreInfoRight[num - 1]; 
+        } else {
+            document.getElementById("userAnswer" + num).style.color = "red";
+            document.getElementById("Explanation" + num).innerHTML = moreInfoWrong [num -1];
+        }
+        document.getElementById("Ans" + num).innerHTML = "Answer: " + answers[num - 1];
+        document.getElementById("totalAsked").innerHTML++; 
+        if (document.getElementById("totalAsked").innerHTML == 10) {
+            alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
+            " / 10"); 
+            leaderboardUpdate(); 
+        } 
+        document.getElementById("button" + num).onclick = ""; 
         }
     </script>   
    <script>
