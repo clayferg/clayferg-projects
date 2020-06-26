@@ -5,15 +5,19 @@
     <title>Clayton's Portfolio Trivia</title>
     <link rel="stylesheet" href="style.css">
     <script> 
-      // To make the leaderboard more realistic, this function creates random dates for all the names
+      // To make the leaderboard more realistic, this function creates random 
+      // dates for all the names
       function returnRandomDate() { 
-      var date = new Date(2001 + Math.floor(Math.random()*20), Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
-      Math.floor(Math.random()*60), Math.floor(Math.random()*60), Math.floor(Math.random()*60));
+      var date = new Date(2001 + Math.floor(Math.random()*20), 
+      Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 
+      Math.floor(Math.random()*60), Math.floor(Math.random()*60), 
+      Math.floor(Math.random()*60));
       return date; 
       }
     </script>
     <script> 
-      // Function allows user to see their response, an explanation of the correct answer, and the correct answer
+      // Function allows user to see their response, an explanation of the 
+      // correct answer, and the correct answer
       function askQuestion(num) {
       var userAnswer = prompt(questions[num - 1], "");
       if (userAnswer === "") {
@@ -23,41 +27,57 @@
       if (userAnswer.toUpperCase() === (answers[num - 1]).toUpperCase()) {
         document.getElementById("userAnswer" + num).style.color = "green";
         document.getElementById("correctAnswers").innerHTML++; 
-        document.getElementById("Explanation" + num).innerHTML = moreInfoRight[num - 1]; 
+        document.getElementById("Explanation" + num).innerHTML = 
+          moreInfoRight[num - 1]; 
       } else {
         document.getElementById("userAnswer" + num).style.color = "red";
-        document.getElementById("Explanation" + num).innerHTML = moreInfoWrong [num -1];
+        document.getElementById("Explanation" + num).innerHTML = 
+        moreInfoWrong [num -1];
         }
-      document.getElementById("Ans" + num).innerHTML = "Answer: " + answers[num - 1];
+      document.getElementById("Ans" + num).innerHTML = "Answer: " + 
+      answers[num - 1];
       document.getElementById("totalAsked").innerHTML++; 
       if (document.getElementById("totalAsked").innerHTML == 10) {
-        alert("Final Score: " + document.getElementById("correctAnswers").innerHTML +
-        " / 10"); 
+        alert("Final Score: " + 
+        document.getElementById("correctAnswers").innerHTML + " / 10"); 
         leaderboardUpdate(); 
       } 
       document.getElementById("button" + num).onclick = ""; 
       }
-    </script>   
+    </script>  
     <script>
       // parallel arrays holding information for the askQuestions function
-      var questions = ["Easy first one: What's my favorite color?", "What was my first job?", 
-      "What's my favorite season?", "What's my middle name?", "What's my favorite animal?", 
+      var questions = ["Easy first one: What's my favorite color?", 
+      "What was my first job?", 
+      "What's my favorite season?", "What's my middle name?", 
+      "What's my favorite animal?", 
       "Which of the following can I do: Backflip, Juggle, Wiggle ears?",
-      "Which of the following can I not do: Snowboard, Sing along to any Hamilton song, Cry on cue?",
-      "What was my high school basketball team's final win-loss record (21 total games)?", 
+      "Which of the following can I not do: Snowboard," + 
+      "Sing along to any Hamilton song, Cry on cue?",
+      "What was my high school basketball team's final win-loss record" +  
+      "(21 total games)?", 
       "What's my favorite Disney movie?", "What's my super power of choice?"]; 
-      var answers = ["Blue", "Google STEP Intern", "Spring", "Alex", "Panda", "Juggle", "Cry on cue", 
+      var answers = ["Blue", "Google STEP Intern", "Spring", "Alex", 
+      "Panda", "Juggle", "Cry on cue", 
       "2-19", "Aladdin", "Super Speed"]; 
-      var moreInfoWrong = ["It's on the home page, pay attention!", "Nope, this is my first one.", 
-      "Good guess, but spring has my birthday, flowers blooming, and the end of semesters.", 
-      "My dad has the same first name as me, so this is what I'm called around the house.",
+      var moreInfoWrong = ["It's on the home page, pay attention!",
+    "Nope, this is my first one.", 
+      "Good guess, but spring has my birthday, flowers blooming, " + 
+      "and the end of semesters.", 
+      "My dad has the same first name as me, so this is what I'm called" +  
+      "around the house.",
       "How dare you write anything else...", "I wish I could do the others.", "Nice try!", 
-      "Yeah, I wouldn't have guessed it either.", "Aladdin >>>", "I could see that being useful though, fair guess."]
-      var moreInfoRight = ["Correct, it was written on the home page!", "Yep, this is the first one.", 
+      "Yeah, I wouldn't have guessed it either.", "Aladdin >>>", 
+      "I could see that being useful though, fair guess."]
+      var moreInfoRight = ["Correct, it was written on the home page!", 
+      "Yep, this is the first one.", 
       "Correct, spring has my birthday, flowers blooming, and the end of semesters.", 
-      "My dad has the same first name as me, so this is what I'm called around the house.",
-      "Do I really have to explain myself?", "I'm not great at it, but yep!", "If only I could",
-      "I guess you can tell why I went into computer science.", "Objectively the best.", 
+      "My dad has the same first name as me, so this is what " + 
+      "I'm called around the house.",
+      "Do I really have to explain myself?", "I'm not great at it, but yep!", 
+      "If only I could",
+      "I guess you can tell why I went into computer science.", 
+      "Objectively the best.", 
       "It's just so practical."]
     </script> 
     <!-- 
@@ -82,22 +102,35 @@
         var name = prompt("What should your leaderboard username be?", ""); 
         var currentDate = new Date(); 
         var leaderboard = [
-          {username: "Mom", score: 9, date: document.getElementById("Date1").innerHTML} ,
-          {username: name, score: document.getElementById("correctAnswers").innerHTML, date: currentDate} ,
-          {username: "Dad", score: 9, date: document.getElementById("Date2").innerHTML} ,
-          {username: "Grandma", score: 8, date: document.getElementById("Date3").innerHTML} ,
-          {username: "Camp Counselor", score: 7, date: document.getElementById("Date4").innerHTML} ,
-          {username: "Sister", score: 7, date: document.getElementById("Date5").innerHTML} ,
-          {username: "Neighbor's Dog", score: 5, date: document.getElementById("Date6").innerHTML} ,
-          {username: "Clayton Ferguson", score: 4, date: document.getElementById("Date7").innerHTML} ,
-          {username: "Siri", score: 3, date: document.getElementById("Date8").innerHTML} ,
-          {username: "A Fallen Tree Branch", score: 1, date: document.getElementById("Date9").innerHTML}
+          {username: "Mom", score: 9, 
+          date: document.getElementById("Date1").innerHTML} ,
+          {username: name, 
+          score: document.getElementById("correctAnswers").innerHTML, date: currentDate} ,
+          {username: "Dad", score: 9, 
+          date: document.getElementById("Date2").innerHTML} ,
+          {username: "Grandma", score: 8, 
+          date: document.getElementById("Date3").innerHTML} ,
+          {username: "Camp Counselor", 
+          score: 7, date: document.getElementById("Date4").innerHTML} ,
+          {username: "Sister", score: 7, 
+          date: document.getElementById("Date5").innerHTML} ,
+          {username: "Neighbor's Dog", 
+          score: 5, date: document.getElementById("Date6").innerHTML} ,
+          {username: "Clayton Ferguson", 
+          score: 4, date: document.getElementById("Date7").innerHTML} ,
+          {username: "Siri", score: 3, 
+          date: document.getElementById("Date8").innerHTML} ,
+          {username: "A Fallen Tree Branch", 
+          score: 1, date: document.getElementById("Date9").innerHTML}
         ]
         leaderboard.sort(compareHelper); 
         for (var i = 0; i < 10; i++) {
-          document.getElementById("Name" + (i+1)).innerHTML = leaderboard[i].username;
-          document.getElementById("Score" + (i+1)).innerHTML = leaderboard[i].score;
-          document.getElementById("Date" + (i+1)).innerHTML = leaderboard[i].date
+          document.getElementById("Name" + 
+          (i+1)).innerHTML = leaderboard[i].username;
+          document.getElementById("Score" + 
+          (i+1)).innerHTML = leaderboard[i].score;
+          document.getElementById("Date" + 
+          (i+1)).innerHTML = leaderboard[i].date;
         }
       }
     </script>  
@@ -141,7 +174,8 @@
       <a href="blog.html">Blog</a>
     </div>
     <h1 style="text-align:center;">Portfolio Trivia</h1>
-    <h2 style="text-align:center;"> Who is Clayton Ferguson? Let's find out. </h2>
+    <h2 style="text-align:center;"> Who is Clayton Ferguson? 
+      Let's find out. </h2>
     <button onclick="askQuestion(1)" id="button1"> Question 1 </button>
     <p id="userAnswer1"></p>
     <p id="Explanation1"></p>
@@ -184,7 +218,8 @@
     <p id="Ans10"></p>
     <p style="text-align:center"> <strong> Your Score: </strong>
       <span id="correctAnswers">0</span> / <span id="totalAsked">0</span></p> 
-    <h2 style="text-align:center; font-size:100px"> <strong> Leaderboard: </strong> </h2> 
+    <h2 style="text-align:center; font-size:100px"> <strong> Leaderboard: 
+      </strong> </h2> 
     <table style="width:100%">
       <tr> 
         <th> Name
@@ -193,39 +228,48 @@
       <tr>
         <td style="text-align:center" id="Name1"> Mom
         <td style="text-align:center" id="Score1"> 9/10
-        <td style="text-align:center" id="Date1"> <script> document.getElementById("Date1").innerHTML = returnRandomDate(); </script> 
+        <td style="text-align:center" id="Date1"> <script> 
+          document.getElementById("Date1").innerHTML = returnRandomDate(); </script> 
       <tr> 
         <td style="text-align:center" id="Name2"> Dad
         <td style="text-align:center" id="Score2"> 9/10
-        <td style="text-align:center" id="Date2"> <script> document.getElementById("Date2").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date2"> <script> 
+          document.getElementById("Date2").innerHTML = returnRandomDate(); </script>
       <tr>
         <td style="text-align:center" id="Name3"> Grandma
         <td style="text-align:center" id="Score3"> 8/10
-        <td style="text-align:center" id="Date3">  <script> document.getElementById("Date3").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date3">  <script> 
+          document.getElementById("Date3").innerHTML = returnRandomDate(); </script>
       <tr> 
         <td style="text-align:center" id="Name4"> Camp Counselor
         <td style="text-align:center" id="Score4"> 7/10
-        <td style="text-align:center" id="Date4">  <script> document.getElementById("Date4").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date4">  <script> 
+          document.getElementById("Date4").innerHTML = returnRandomDate(); </script>
       <tr>
         <td style="text-align:center" id="Name5"> Sister
         <td style="text-align:center" id="Score5"> 7/10
-        <td style="text-align:center" id="Date5">  <script> document.getElementById("Date5").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date5">  <script> 
+          document.getElementById("Date5").innerHTML = returnRandomDate(); </script>
       <tr> 
         <td style="text-align:center" id="Name6"> Neighbor's Dog
         <td style="text-align:center" id="Score6"> 5/10
-        <td style="text-align:center" id="Date6"> <script> document.getElementById("Date6").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date6"> <script> 
+          document.getElementById("Date6").innerHTML = returnRandomDate(); </script>
       <tr>
         <td style="text-align:center" id="Name7"> Clayton Ferguson (it's hard to know yourself)
         <td style="text-align:center" id="Score7"> 4/10
-        <td style="text-align:center" id="Date7"> <script> document.getElementById("Date7").innerHTML = returnRandomDate(); </script> 
+        <td style="text-align:center" id="Date7"> <script> 
+          document.getElementById("Date7").innerHTML = returnRandomDate(); </script> 
       <tr> 
         <td style="text-align:center" id="Name8"> Siri
         <td style="text-align:center" id="Score8"> 3/10
-        <td style="text-align:center" id="Date8"> <script> document.getElementById("Date8").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date8"> <script> 
+          document.getElementById("Date8").innerHTML = returnRandomDate(); </script>
       <tr> 
         <td style="text-align:center" id="Name9"> A Fallen Tree Branch
         <td style="text-align:center" id="Score9"> 1/10
-        <td style="text-align:center" id="Date9"> <script> document.getElementById("Date9").innerHTML = returnRandomDate(); </script>
+        <td style="text-align:center" id="Date9"> <script> 
+          document.getElementById("Date9").innerHTML = returnRandomDate(); </script>
       <tr>
         <td style="text-align:center" id="Name10">
         <td style="text-align:center" id="Score10">
@@ -241,8 +285,10 @@
     <p><br></p> 
     <address> 
       Written by Clayton Ferguson <br>
-      Email: <a href="mailto:clayferg@google.com";> clayferg@google.com </a> <br>
-      Github:<a href="https://github.com/clayferg"  target="_blank"> clayferg </a> <br>
+      Email: <a href="mailto:clayferg@google.com";>
+        clayferg@google.com </a> <br>
+      Github:<a href="https://github.com/clayferg"  target="_blank">
+       clayferg </a> <br>
       Home Address: Eh, let's stick with the email for now 
     </address>
   </body>
