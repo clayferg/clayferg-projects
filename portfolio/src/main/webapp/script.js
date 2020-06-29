@@ -34,7 +34,7 @@ function addFavoriteThing() {
     factContainer.innerText = "That's all the info you get for now...";
   }
 }
-
+// Retreive Message from Servlet
 function getMessage() {
     fetch('/data').then(response => response.text()).then(message => {
         document.getElementById("message-container").innerText = message;
