@@ -14,8 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.ServerStats;
 import com.google.gson.Gson;
+import com.google.sps.data.ServerStats;
 import java.io.IOException;
 import java.util.Date;
 import javax.servlet.annotation.WebServlet;
@@ -44,9 +44,7 @@ public final class ServerStatsServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  /**
-   * Converts a ServerStats instance into a JSON string using manual String concatentation.
-   */
+  /** Converts a ServerStats instance into a JSON string using manual String concatentation. */
   private String convertToJson(ServerStats serverStats) {
     String json = "{";
     json += "\"startTime\": ";
