@@ -14,8 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.UfoSighting;
 import com.google.gson.Gson;
+import com.google.sps.data.UfoSighting;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
