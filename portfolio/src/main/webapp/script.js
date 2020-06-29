@@ -34,9 +34,18 @@ function addFavoriteThing() {
     factContainer.innerText = "That's all the info you get for now...";
   }
 }
-// Retreive Message from Servlet
+// Retreive Messages from Servlet
 function getMessage() {
-    fetch('/data').then(response => response.text()).then(message => {
-        document.getElementById("message-container").innerText = message;
-    })
+  fetch('/data').then(response => response.json()).then(messages => {
+    const messageElement = document.getElementById('message-container');
+    messageElement.innerHTML = ''; 
+    messages.forEach(getMessageHelper);
+  })
+}
+
+function getMessageHelper(message) {
+  const messageElement = document.getElementById('message-container');
+  const paragraphElement = document.createElement('p'); 
+  paragraphElement.innerText = message;  
+  messageElement.appendChild(paragraphElement);
 }
