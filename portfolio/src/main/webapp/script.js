@@ -34,3 +34,9 @@ function addFavoriteThing() {
     factContainer.innerText = "That's all the info you get for now...";
   }
 }
+
+function getMessage() {
+    fetch('/data').then(response => response.text()).then(message => {
+        document.getElementById("message-container").innerText = message;
+    })
+}
