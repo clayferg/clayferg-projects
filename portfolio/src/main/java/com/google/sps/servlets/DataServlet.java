@@ -14,12 +14,12 @@
 
 package com.google.sps.servlets;
 
-import com.google.gson.Gson;
-import java.io.IOException;
-import java.util.ArrayList;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +31,13 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String username = getStringParameter(request, "username"); 
+    String username = getStringParameter(request, "username");
     String comment = getStringParameter(request, "comment");
     long timestamp = System.currentTimeMillis();
 
     Entity newComment = new Entity("Comment");
-    newComment.setProperty("Username", username); 
-    newComment.setProperty("Comment", comment); 
+    newComment.setProperty("Username", username);
+    newComment.setProperty("Comment", comment);
     newComment.setProperty("Timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -53,13 +53,13 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   }
-/*
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(newComment));
-  }
-*/ 
+  /*
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      response.setContentType("application/json;");
+      response.getWriter().println(convertToJsonUsingGson(newComment));
+    }
+  */
   private String convertToJsonUsingGson(ArrayList input) {
     Gson gson = new Gson();
     String json = gson.toJson(input);
