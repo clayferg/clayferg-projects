@@ -17,6 +17,9 @@ package com.google.sps.servlets;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,28 +29,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<NewComment> comments = new ArrayList<>();
-
-  private static class NewComment {
-    String username;
-    String comment;
-
-    public NewComment(String username, String comment) {
-      this.username = username;
-      this.comment = comment;
-    }
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String username = getStringParameter(request, "username"); 
+    String comment = getStringParameter(request, "comment");
+    long timestamp = System.currentTimeMillis();
 
-    NewComment commentToAdd =
-        new NewComment(
-            getStringParameter(request, "username"), getStringParameter(request, "comment"));
-    comments.add(commentToAdd);
+    Entity newComment = new Entity("Comment");
+    newComment.setProperty("Username", username); 
+    newComment.setProperty("Comment", comment); 
+    newComment.setProperty("Timestamp", timestamp);
 
-    response.setContentType("text/html");
-    response.getWriter().println(convertToJsonUsingGson(comments));
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(newComment);
+
     response.sendRedirect("/index.html");
   }
 
@@ -58,13 +53,13 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   }
-
+/*
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(comments));
+    response.getWriter().println(convertToJsonUsingGson(newComment));
   }
-
+*/ 
   private String convertToJsonUsingGson(ArrayList input) {
     Gson gson = new Gson();
     String json = gson.toJson(input);
