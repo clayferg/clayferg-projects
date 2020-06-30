@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,15 +34,15 @@ public class DataServlet extends HttpServlet {
 
   private static class Comment {
     long id;
-    long timestamp; 
+    long timestamp;
     String username;
-    String comment;  
+    String comment;
 
     public Comment(long id, long timestamp, String username, String comment) {
-        this.id = id; 
-        this.timestamp = timestamp;
-        this.username = username; 
-        this.comment = comment; 
+      this.id = id;
+      this.timestamp = timestamp;
+      this.username = username;
+      this.comment = comment;
     }
   }
 
@@ -71,33 +70,32 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   }
-  
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING); 
 
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService(); 
-      PreparedQuery results = datastore.prepare(query); 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING);
 
-      ArrayList<Comment> comments = new ArrayList<>(); 
-      for (Entity entity : results.asIterable()) {
-        long id = entity.getKey().getId(); 
-        long timestamp = (long) entity.getProperty("Timestamp"); 
-        String username = (String) entity.getProperty("Username"); 
-        String commentText = (String) entity.getProperty("Comment");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
 
-        Comment comment = new Comment(id, timestamp, username, commentText);
-        comments.add(comment); 
-      }
-      
-      response.setContentType("application/json;");
-      response.getWriter().println(convertToJsonUsingGson(comments));
+    ArrayList<Comment> comments = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      long id = entity.getKey().getId();
+      long timestamp = (long) entity.getProperty("Timestamp");
+      String username = (String) entity.getProperty("Username");
+      String commentText = (String) entity.getProperty("Comment");
+
+      Comment comment = new Comment(id, timestamp, username, commentText);
+      comments.add(comment);
     }
-  
+
+    response.setContentType("application/json;");
+    response.getWriter().println(convertToJsonUsingGson(comments));
+  }
+
   private String convertToJsonUsingGson(ArrayList input) {
     Gson gson = new Gson();
     String json = gson.toJson(input);
     return json;
   }
 }
-
