@@ -74,10 +74,17 @@
 
     <form action="/data" method="POST">
       <label for="username">Username:</label><br>
-      <input type="text" id="username" name="username">Anonymous</input><br>
+      <input type="text" id="username" name="username" value="Anonymous"></input><br>
       <label for="comment">Comment:</input><br>
-      <input type="text" id="comment" name="comment"></input>
-      <input type="submit" name="Submit">Submit Comment</input>
+      <input type="text" id="comment" name="comment"></input><br>
+      <label for="max-num-comments">Maximum Number of Comments Shown:</input><br>
+      <select name="max-num-comments" id="max-num-comments">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+      </select>
+      <input type="submit" name="Submit" value="Submit"></input>
     </form>
 
     <nav style="text-align:center"> 

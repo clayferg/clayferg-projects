@@ -36,7 +36,7 @@ function addFavoriteThing() {
 }
 // Retreive Messages from Servlet
 function getMessage() {
-  fetch('/data').then(response => response.json()).then(comments => {
+  fetch('/data?max-num-comments=2').then(response => response.json()).then(comments => {
     const messageElement = document.getElementById('message-container');
     messageElement.innerHTML = ''; 
     comments.forEach(getMessageHelper);
