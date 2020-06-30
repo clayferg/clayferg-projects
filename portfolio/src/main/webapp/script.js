@@ -36,16 +36,19 @@ function addFavoriteThing() {
 }
 // Retreive Messages from Servlet
 function getMessage() {
-  fetch('/data').then(response => response.json()).then(messages => {
+  fetch('/data').then(response => response.json()).then(comments => {
     const messageElement = document.getElementById('message-container');
     messageElement.innerHTML = ''; 
-    messages.forEach(getMessageHelper);
+    comments.forEach(getMessageHelper);
   })
 }
 
-function getMessageHelper(message) {
+function getMessageHelper(singleComment) {
   const messageElement = document.getElementById('message-container');
-  const paragraphElement = document.createElement('p'); 
-  paragraphElement.innerText = message;  
-  messageElement.appendChild(paragraphElement);
+  const usernameElement = document.createElement('p'); 
+  const commentElement = document.createElement('p');   
+  usernameElement.innerText = "Username: " + singleComment.username;  
+  commentElement.innerText = "Comment: " + singleComment.comment; 
+  messageElement.appendChild(usernameElement);
+  messageElement.appendChild(commentElement);
 }
