@@ -12,3 +12,7 @@ jobs:
         uses: hallee/eslint-action@1.0.3
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
+      - name: ESLint Action
+        uses: hallee/eslint-action@1.0.3
+
+
