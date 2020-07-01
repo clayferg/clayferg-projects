@@ -42,12 +42,16 @@ function addFavoriteThing() {
   }
 }
 // Retreive Messages from Servlet
-function getMessage() {
-  fetch('/data').then((response) => response.json()).then((messages) => {
+function getMessage(maxNum) {
+  if (maxNum == null || maxNum == "") {
+      maxNum = 5; 
+  }
+  fetch('/data?max-num-comments=' + maxNum).then((response) => response.json()).then((messages) => {
     const messageElement = document.getElementById('message-container');
     messageElement.innerHTML = '';
     messages.forEach(getMessageHelper);
-  })};
+  })
+  }
 
 function getMessageHelper(singleComment) {
   const messageElement = document.getElementById('message-container');
