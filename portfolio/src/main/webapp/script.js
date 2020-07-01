@@ -15,44 +15,44 @@
 /**
  * Shows random facts about me until there are none left
  */
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 
 const facts =
   [
-    'My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack \
-    Horseman (Netflix). You do not have to watch them, but you also kind of do.',
-    "My favorite albums are Fulfillingness' First Finale (Stevie Wonder), Because \
-    the Internet (Childish Gambino), To Pimp A Butterfly (Kendrick Lamar), \
-    2014 Forrest Hills Drive (J Cole), \
-    and Acid Rap (Chance The Rapper).",
+    'My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack' +
+    'Horseman (Netflix). You do not have to watch them,' + 
+    'but you also kind of do.',
+    ' My favorite albums are Fulfillingness\' First Finale (Stevie Wonder),' + 
+    + ' Becuase the Internet (Childish Gambino), To Pimp A Butterfly ' + 
+    ' (Kendrick Lamar), 2014 Forrest Hills Drive (J Cole),' +
+    ' and Acid Rap (Chance The Rapper).',
     'My favorite movies are Get Out, The Artist, and Sorry To Bother You.',
-    'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak \
-    (oops, you knew that already), favorite color - blue!'
+    'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak' +
+    '(oops, you knew that already), favorite color - blue!',
   ];
 function addFavoriteThing() {
   const factContainer = document.getElementById('greeting-container');
   if (facts.length!=0) {
-  // Pick a random fact.
-  var randomNumber = Math.floor(Math.random() * facts.length); 
-  const fact = facts[randomNumber];
-  // Add it to the page and remove it from the list
-  factContainer.innerText = fact;
-  facts.splice(randomNumber,1); 
+    // Pick a random fact.
+    let randomNumber = Math.floor(Math.random() * facts.length);
+    const fact = facts[randomNumber];
+    // Add it to the page and remove it from the list
+    factContainer.innerText = fact;
+    facts.splice(randomNumber, 1);
   } else {
-    factContainer.innerText = "That's all the info you get for now...";
+    factContainer.innerText = 'That is all the info you get for now...';
   }
 }
 // Retreive Messages from Servlet
 function getMessage() {
-  fetch('/data').then(response => response.json()).then(messages => {
+  fetch('/data').then((response) => response.json()).then((messages) => {
     const messageElement = document.getElementById('message-container');
-    messageElement.innerHTML = ''; 
+    messageElement.innerHTML = '';
     messages.forEach(getMessageHelper);
-  })
+  });
 }
 
 function getMessageHelper(message) {
   const messageElement = document.getElementById('message-container');
-  const paragraphElement = document.createElement('p'); 
-  paragraphElement.innerText = message;  
+  const paragraphElement = document.createElement('p');
+  paragraphElement.innerText = message;
   messageElement.appendChild(paragraphElement);
 }
