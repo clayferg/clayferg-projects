@@ -47,11 +47,10 @@ function getMessage() {
     const messageElement = document.getElementById('message-container');
     messageElement.innerHTML = '';
     messages.forEach(getMessageHelper);
-  });
+  })};
 
 function getMessageHelper(singleComment) {
   const messageElement = document.getElementById('message-container');
-<<<<<<< HEAD
   const usernameElement = document.createElement('p'); 
   const commentElement = document.createElement('p');   
   usernameElement.innerText = "Username: " + singleComment.username;  
@@ -59,9 +58,3 @@ function getMessageHelper(singleComment) {
   messageElement.appendChild(usernameElement);
   messageElement.appendChild(commentElement);
 }
-=======
-  const paragraphElement = document.createElement('p');
-  paragraphElement.innerText = message;
-  messageElement.appendChild(paragraphElement);
-}
->>>>>>> 7ff31f569091ecabec4fb4065bdae0b9a7cd95a3
