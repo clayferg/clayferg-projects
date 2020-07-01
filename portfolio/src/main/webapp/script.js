@@ -18,10 +18,10 @@
 const facts =
   [
     'My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack' +
-    'Horseman (Netflix). You do not have to watch them,' + 
+    'Horseman (Netflix). You do not have to watch them,' +
     'but you also kind of do.',
-    ' My favorite albums are Fulfillingness\' First Finale (Stevie Wonder),' + 
-    + ' Becuase the Internet (Childish Gambino), To Pimp A Butterfly ' + 
+    ' My favorite albums are Fulfillingness\' First Finale (Stevie Wonder),' +
+    + ' Becuase the Internet (Childish Gambino), To Pimp A Butterfly ' +
     ' (Kendrick Lamar), 2014 Forrest Hills Drive (J Cole),' +
     ' and Acid Rap (Chance The Rapper).',
     'My favorite movies are Get Out, The Artist, and Sorry To Bother You.',
@@ -32,7 +32,7 @@ function addFavoriteThing() {
   const factContainer = document.getElementById('greeting-container');
   if (facts.length!=0) {
     // Pick a random fact.
-    let randomNumber = Math.floor(Math.random() * facts.length);
+    const randomNumber = Math.floor(Math.random() * facts.length);
     const fact = facts[randomNumber];
     // Add it to the page and remove it from the list
     factContainer.innerText = fact;
