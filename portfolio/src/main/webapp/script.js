@@ -28,7 +28,7 @@ const facts =
     'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak' +
     '(oops, you knew that already), favorite color - blue!',
   ];
-function addFavoriteThing() {
+function addFavoriteThing() { // eslint-disable-line no-unused-vars
   const factContainer = document.getElementById('greeting-container');
   if (facts.length!=0) {
     // Pick a random fact.
@@ -42,7 +42,7 @@ function addFavoriteThing() {
   }
 }
 // Retreive Messages from Servlet
-function getMessage(maxNum) {
+function getMessage(maxNum) { // eslint-disable-line no-unused-vars
   if (maxNum == null || maxNum == "") {
       maxNum = 5; 
   }
@@ -53,7 +53,7 @@ function getMessage(maxNum) {
   })
   }
 
-function getMessageHelper(singleComment) {
+function getMessageHelper(singleComment) { // eslint-disable-line no-unused-vars
   const messageElement = document.getElementById('message-container');
   const usernameElement = document.createElement('p'); 
   const commentElement = document.createElement('p');   
@@ -63,7 +63,7 @@ function getMessageHelper(singleComment) {
   messageElement.appendChild(commentElement);
 }
 
-function deleteAllMessages() {
+function deleteAllMessages() { // eslint-disable-line no-unused-vars
   const request = new Request('/delete-data', {method: 'POST'});
   fetch(request).then(response => {
       getMessage(0);
