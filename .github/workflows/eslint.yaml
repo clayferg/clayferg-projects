@@ -9,11 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: ESLint Action
-        source-root: portfolio
-        uses: hallee/eslint-action@1.0.3
-      - name: Lint with ESLint
-        source-root: portfolio
         uses: hallee/eslint-action@1.0.3
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
-      
+          source-root: portfolio
+      - name: Lint with ESLint
+        uses: hallee/eslint-action@1.0.3
+        with:
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          source-root: portfolio
