@@ -26,25 +26,48 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> messages;
+  private ArrayList<NewComment> comments = new ArrayList<>();
+
+  private static class NewComment {
+    String username;
+    String comment;
+
+    public NewComment(String username, String comment) {
+      this.username = username;
+      this.comment = comment;
+    }
+  }
 
   @Override
-  public void init() {
-    messages = new ArrayList<>();
-    messages.add("This is string 1");
-    messages.add("This is string 2");
-    messages.add("This is string 3");
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    NewComment commentToAdd =
+        new NewComment(
+            getStringParameter(request, "username"), getStringParameter(request, "comment"));
+    comments.add(commentToAdd);
+
+    response.setContentType("text/html");
+    response.getWriter().println(convertToJsonUsingGson(comments));
+    response.sendRedirect("/index.html");
+  }
+
+  private String getStringParameter(HttpServletRequest request, String name) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      value = "";
+    }
+    return value;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJsonUsingGson(comments));
   }
 
-  private String convertToJsonUsingGson(ArrayList messages) {
+  private String convertToJsonUsingGson(ArrayList input) {
     Gson gson = new Gson();
-    String json = gson.toJson(messages);
+    String json = gson.toJson(input);
     return json;
   }
 }

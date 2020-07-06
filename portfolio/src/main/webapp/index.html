@@ -33,7 +33,7 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="getMessage()">
     <!--
       Adapted from: 
       https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_topnav
@@ -69,9 +69,16 @@
       Projects from COS 226 Algorithms and Data Structures Course </a> </li>
     </ul>
 
-    <button onclick="getMessage()">Get Message Now!</button>
-    <!-- Display Fetched Message -->
+    <p><strong>Comment Section:</strong></p>
     <div id="message-container"></div>
+
+    <form action="/data" method="POST">
+      <label for="username">Username:</label><br>
+      <input type="text" id="username" name="username">Anonymous</input><br>
+      <label for="comment">Comment:</input><br>
+      <input type="text" id="comment" name="comment"></input>
+      <input type="submit" name="Submit">Submit Comment</input>
+    </form>
 
     <nav style="text-align:center"> 
       <a href="index.html"> Home Page |</a>
