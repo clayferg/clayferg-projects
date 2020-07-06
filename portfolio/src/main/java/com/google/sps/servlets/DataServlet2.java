@@ -57,14 +57,8 @@ public class DataServlet2 extends HttpServlet {
     Query query = new Query("Comment");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    ArrayList<Key> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      Key key = entity.getKey();
-      comments.add(key);
-    }
-
-    for (Key key : comments) {
-    datastore.delete(key);
+      datastore.delete(entity.getKey());
     }
 
     response.setContentType("application/json;");
