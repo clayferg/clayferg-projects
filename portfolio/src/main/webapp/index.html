@@ -33,7 +33,7 @@
       }
     </style>
   </head>
-  <body onload="getMessage()">
+  <body onload="getMessage(document.getElementById('max-num-comments').value)">
     <!--
       Adapted from: 
       https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_topnav
@@ -69,16 +69,27 @@
       Projects from COS 226 Algorithms and Data Structures Course </a> </li>
     </ul>
 
-    <p><strong>Comment Section:</strong></p>
-    <div id="message-container"></div>
-
     <form action="/data" method="POST">
       <label for="username">Username:</label><br>
-      <input type="text" id="username" name="username">Anonymous</input><br>
+      <input type="text" id="username" name="username" value="Anonymous"></input><br>
       <label for="comment">Comment:</input><br>
       <input type="text" id="comment" name="comment"></input>
-      <input type="submit" name="Submit">Submit Comment</input>
+      <input type="submit" name="Submit" value="Submit Comment!"></input>
     </form>
+    <br>
+    <form action="javascript:void(0);">
+      <label for="max-num-comments">Maximum Number of Comments Shown</label><br>
+      <select name="max-num-comments" id="max-num-comments">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+      </select>
+      <button onclick="getMessage(document.getElementById('max-num-comments').value)">Show Comments</button>
+    </form> 
+
+    <p><strong>Comment Section:</strong></p>
+    <div id="message-container"></div>
 
     <nav style="text-align:center"> 
       <a href="index.html"> Home Page |</a>
