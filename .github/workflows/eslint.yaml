@@ -3,7 +3,7 @@ name: JavaScript Lint
 on: [push]
 
 jobs:
-  eslint:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
