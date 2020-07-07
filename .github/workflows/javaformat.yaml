@@ -17,12 +17,14 @@ jobs:
           echo "Downloading google-java-format 1.8..."
           wget -q https://github.com/google/google-java-format/releases/download/google-java-format-1.8/google-java-format-1.8-all-deps.jar
           echo ""
+
           FILES=`find . -name "*.java" -type f`
           echo "Found the following Java files:"
           for file in $FILES; do
             echo $file
           done
           echo ""
+
           EXIT=0
           for file in $FILES; do
             echo -e "Running google-java-format on:\n $file\n"
