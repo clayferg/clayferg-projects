@@ -78,21 +78,29 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    // Convert the input to an int.
+    int maxNumberComments;
+    try {
+      maxNumberComments = Integer.parseInt(request.getParameter("max-num-comments"));
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + request.getParameter("max-num-comments"));
+      maxNumberComments = 3; 
+    }
+
     ArrayList<Comment> comments = new ArrayList<>();
 
     int maxComments = Integer.parseInt(request.getParameter("max-num-comments"));
 
     for (Entity entity : results.asIterable()) {
-      if (maxComments == 0) break;
+      if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
       long timestamp = (long) entity.getProperty("Timestamp");
       String username = (String) entity.getProperty("Username");
       String commentText = (String) entity.getProperty("Comment");
       Comment comment = new Comment(id, timestamp, username, commentText);
       comments.add(comment);
-      maxComments--;
+      maxNumberComments--; 
     }
-
     response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(comments));
   }
@@ -103,3 +111,4 @@ public class DataServlet extends HttpServlet {
     return json;
   }
 }
+
