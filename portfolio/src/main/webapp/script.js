@@ -293,29 +293,114 @@ function createMap() {
       ]
     });
   const homeMarker = new google.maps.Marker({
-    position: {lat: 41.3492972, lng: -81.4174989,},
-    title:"My Home"
+    position: {
+      lat: 41.3492972,
+      lng: -81.4174989,
+    },
+    title: "My Home"
   });
   homeMarker.setMap(map);
+  const homeMarkerContent = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">My Home</h1>' +
+    '<div id="bodyContent">' +
+    '<p> Here is info about my house </p>' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const homeInfoWindow = new google.maps.InfoWindow({
+    content: homeMarkerContent
+  });
+  homeMarker.addListener('click', function() {
+    homeInfoWindow.open(map, homeMarker);
+  });
   const schoolMarker = new google.maps.Marker({
-    position: {lat: 40.3430983, lng: -74.6572626,},
+    position: {
+      lat: 40.3430983,
+      lng: -74.6572626,
+    },
     title: "My University"
-  }); 
-  schoolMarker.setMap(map); 
+  });
+  schoolMarker.setMap(map);
+  const schoolMarkerContent = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">My School</h1>' +
+    '<div id="bodyContent">' +
+    '<p> Here is info about Princeton </p>' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const schoolInfoWindow = new google.maps.InfoWindow({
+    content: schoolMarkerContent
+  });
+  schoolMarker.addListener('click', function() {
+    schoolInfoWindow.open(map, schoolMarker);
+  });
   const highSchoolMarker = new google.maps.Marker({
-    position: {lat: 41.5257359,lng: -81.3880294,}, 
+    position: {
+      lat: 41.5257359,
+      lng: -81.3880294,
+    },
     title: "My High School"
-  }); 
-  highSchoolMarker.setMap(map); 
-  const fiveGuysMarker = new google.maps.Marker({
-    position: {lat: 41.5257988,lng: -81.4208599}, 
-    title: "My Favorite Restaurant (Five Guys)"
-  }); 
-  fiveGuysMarker.setMap(map); 
-  const rMFHMarker = new google.maps.Marker({
-    position: {lat: 41.4964837, lng:-81.6904016,},
-    title: "Clevleand Basektball Arena"
-  }); 
-  rMFHMarker.setMap(map); 
-}
+  });
+  highSchoolMarker.setMap(map);
+  const highSchoolMarkerContent = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">My High School</h1>' +
+    '<div id="bodyContent">' +
+    '<p> Here is info about My High School</p>' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
 
+  const highSchoolInfoWindow = new google.maps.InfoWindow({
+    content: highSchoolMarkerContent
+  });
+  highSchoolMarker.addListener('click', function() {
+    highSchoolInfoWindow.open(map, highSchoolMarker);
+  });
+  const fiveGuysMarker = new google.maps.Marker({
+    position: {
+      lat: 41.5257988,
+      lng: -81.4208599
+    },
+    title: "My Favorite Restaurant (Five Guys)"
+  });
+  fiveGuysMarker.setMap(map);
+  const fiveGuysMarkerContent = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">My Favorite Restaurant</h1>' +
+    '<div id="bodyContent">' +
+    '<p> Here is info about Five Guys </p>' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const fiveGuysInfoWindow = new google.maps.InfoWindow({
+    content: fiveGuysMarkerContent
+  });
+  fiveGuysMarker.addListener('click', function() {
+    fiveGuysInfoWindow.open(map, fiveGuysMarker);
+  });
+  const rMFHMarker = new google.maps.Marker({
+    position: {
+      lat: 41.4964837,
+      lng: -81.6904016,
+    },
+    title: "Clevleand Basektball Arena"
+  });
+  rMFHMarker.setMap(map);
+  const rMFHMarkerContent = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Rocket Mortgage FieldHouse</h1>' +
+    '<div id="bodyContent">' +
+    '<p> Here is info about RMFH. </p>' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const rMFHInfoWindow = new google.maps.InfoWindow({
+    content: rMFHMarkerContent
+  });
+  rMFHMarker.addListener('click', function() {
+    rMFHInfoWindow.open(map, rMFHMarker);
+  });
+}
