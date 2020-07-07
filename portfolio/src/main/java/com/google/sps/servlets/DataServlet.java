@@ -88,13 +88,15 @@ public class DataServlet extends HttpServlet {
     }
 
     ArrayList<Comment> comments = new ArrayList<>();
+
+    int maxComments = Integer.parseInt(request.getParameter("max-num-comments"));
+
     for (Entity entity : results.asIterable()) {
       if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
       long timestamp = (long) entity.getProperty("Timestamp");
       String username = (String) entity.getProperty("Username");
       String commentText = (String) entity.getProperty("Comment");
-
       Comment comment = new Comment(id, timestamp, username, commentText);
       comments.add(comment);
       maxNumberComments--; 
