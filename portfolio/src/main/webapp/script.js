@@ -62,3 +62,10 @@ function getMessageHelper(singleComment) {
   messageElement.appendChild(usernameElement);
   messageElement.appendChild(commentElement);
 }
+
+function deleteAllMessages() {
+  const request = new Request('/delete-data', {method: 'POST'});
+  fetch(request).then(response => {
+      getMessage(0);
+  })
+}
