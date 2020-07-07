@@ -14,7 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +26,48 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  private ArrayList<NewComment> comments = new ArrayList<>();
+
+  private static class NewComment {
+    String username;
+    String comment;
+
+    public NewComment(String username, String comment) {
+      this.username = username;
+      this.comment = comment;
+    }
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    NewComment commentToAdd =
+        new NewComment(
+            getStringParameter(request, "username"), getStringParameter(request, "comment"));
+    comments.add(commentToAdd);
+
+    response.setContentType("text/html");
+    response.getWriter().println(convertToJsonUsingGson(comments));
+    response.sendRedirect("/index.html");
+  }
+
+  private String getStringParameter(HttpServletRequest request, String name) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      value = "";
+    }
+    return value;
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello world!</h1>");
+    response.setContentType("application/json;");
+    response.getWriter().println(convertToJsonUsingGson(comments));
+  }
+
+  private String convertToJsonUsingGson(ArrayList input) {
+    Gson gson = new Gson();
+    String json = gson.toJson(input);
+    return json;
   }
 }
