@@ -35,37 +35,39 @@ public class DataServlet extends HttpServlet {
   private static class Comment {
     long id;
     long timestamp;
-    String username;
+    String userName;
     String comment;
 
-    public Comment(long id, long timestamp, String username, String comment) {
+    public Comment(long id, long timestamp, String userName, String comment) {
       this.id = id;
       this.timestamp = timestamp;
-      this.username = username;
+      this.userName = userName;
       this.comment = comment;
     }
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String username = getStringParameter(request, "username");
-    String comment = getStringParameter(request, "comment");
-    long timestamp = System.currentTimeMillis();
+    String userName = getStringParameter(request, "username", "Anonymous");
+    String comment = getStringParameter(request, "comment", "");
+    if (!comment.equals("")) {
+      long timestamp = System.currentTimeMillis();
 
-    Entity newComment = new Entity("Comment");
-    newComment.setProperty("Username", username);
-    newComment.setProperty("Comment", comment);
-    newComment.setProperty("Timestamp", timestamp);
+      Entity newComment = new Entity("Comment");
+      newComment.setProperty("Username", userName);
+      newComment.setProperty("Comment", comment);
+      newComment.setProperty("Timestamp", timestamp);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(newComment);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(newComment);
+    }
     response.sendRedirect("/index.html");
   }
 
-  private String getStringParameter(HttpServletRequest request, String name) {
+  private String getStringParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
-    if (value == null) {
-      value = "";
+    if (value.equals(null) || value.equals("")) {
+      value = defaultValue;
     }
     return value;
   }
@@ -92,10 +94,10 @@ public class DataServlet extends HttpServlet {
       if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
       long timestamp = (long) entity.getProperty("Timestamp");
-      String username = (String) entity.getProperty("Username");
+      String userName = (String) entity.getProperty("Username");
       String commentText = (String) entity.getProperty("Comment");
 
-      Comment comment = new Comment(id, timestamp, username, commentText);
+      Comment comment = new Comment(id, timestamp, userName, commentText);
       comments.add(comment);
       maxNumberComments--; 
     }
