@@ -14,6 +14,12 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,13 +32,15 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<NewComment> comments = new ArrayList<>();
-
-  private static class NewComment {
+  private static class Comment {
+    long id;
+    long timestamp;
     String username;
     String comment;
 
-    public NewComment(String username, String comment) {
+    public Comment(long id, long timestamp, String username, String comment) {
+      this.id = id;
+      this.timestamp = timestamp;
       this.username = username;
       this.comment = comment;
     }
@@ -41,13 +49,18 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    NewComment commentToAdd =
-        new NewComment(
-            getStringParameter(request, "username"), getStringParameter(request, "comment"));
-    comments.add(commentToAdd);
+    String username = getStringParameter(request, "username");
+    String comment = getStringParameter(request, "comment");
+    long timestamp = System.currentTimeMillis();
 
-    response.setContentType("text/html");
-    response.getWriter().println(convertToJsonUsingGson(comments));
+    Entity newComment = new Entity("Comment");
+    newComment.setProperty("Username", username);
+    newComment.setProperty("Comment", comment);
+    newComment.setProperty("Timestamp", timestamp);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(newComment);
+    
     response.sendRedirect("/index.html");
   }
 
@@ -61,6 +74,34 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    // Convert the input to an int.
+    int maxNumberComments;
+    try {
+      maxNumberComments = Integer.parseInt(request.getParameter("max-num-comments"));
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + request.getParameter("max-num-comments"));
+      maxNumberComments = 3; 
+    }
+
+    ArrayList<Comment> comments = new ArrayList<>();
+
+    int maxComments = Integer.parseInt(request.getParameter("max-num-comments"));
+
+    for (Entity entity : results.asIterable()) {
+      if (maxNumberComments == 0) break; 
+      long id = entity.getKey().getId();
+      long timestamp = (long) entity.getProperty("Timestamp");
+      String username = (String) entity.getProperty("Username");
+      String commentText = (String) entity.getProperty("Comment");
+      Comment comment = new Comment(id, timestamp, username, commentText);
+      comments.add(comment);
+      maxNumberComments--; 
+    }
     response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(comments));
   }
@@ -71,3 +112,4 @@ public class DataServlet extends HttpServlet {
     return json;
   }
 }
+
