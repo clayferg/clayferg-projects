@@ -44,11 +44,13 @@ public class LoginAPI extends HttpServlet {
     boolean isLoggedIn; 
     String loginLink; 
     String logoutLink; 
+    String userEmail; 
 
-    public LoginInfo(boolean isLoggedIn, String loginLink, String logoutLink) {
+    public LoginInfo(boolean isLoggedIn, String loginLink, String logoutLink, String userEmail) {
       this.isLoggedIn = isLoggedIn; 
       this.loginLink = loginLink; 
       this.logoutLink = logoutLink; 
+      this.userEmail = userEmail; 
     }
   }
 
@@ -60,14 +62,17 @@ public class LoginAPI extends HttpServlet {
     boolean isLoggedIn = userService.isUserLoggedIn(); 
     String loginLink; 
     String logoutLink; 
+    String userEmail; 
     if (isLoggedIn) {
       logoutLink = userService.createLogoutURL("/index.html");
       loginLink = null; 
+      userEmail = userService.getCurrentUser().getEmail();
     } else {
       loginLink = userService.createLoginURL("/index.html");
       logoutLink = null; 
+      userEmail = null; 
     }
-    LoginInfo user = new LoginInfo(isLoggedIn, loginLink, logoutLink); 
+    LoginInfo user = new LoginInfo(isLoggedIn, loginLink, logoutLink, userEmail); 
 
     response.getWriter().println(convertToJsonUsingGson(user));
   }

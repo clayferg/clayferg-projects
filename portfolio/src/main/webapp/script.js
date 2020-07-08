@@ -48,6 +48,7 @@ function getUserInfo() {
       document.getElementById("comment-form").style.display = "block";
       document.getElementById("login-logout").href = loginInfo.logoutLink;
       document.getElementById("login-logout").innerText = "Logout Here"; 
+      document.getElementById("username").value = loginInfo.userEmail; 
     } else {
       console.log(loginInfo.loginLink); 
       document.getElementById("comment-form").style.display = "none";
