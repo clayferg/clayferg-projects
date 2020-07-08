@@ -376,4 +376,138 @@ function createMap() {
   rMFHMarker.addListener('click', function() {
     rMFHInfoWindow.open(map, rMFHMarker);
   });
+  
+
+
+  const graduationMarker = new google.maps.Marker({
+    position: {
+      lat: 42.0532068,
+      lng: -87.675528,
+    },
+    title: "Northwestern Deering Library"
+  });
+  graduationMarker.setMap(map);
+  const graduationMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Kristen\'s Graduation</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about Kristen. </p>' +
+    '<img src="/Images/Graduation.jpg" width="300" height="300">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const graduationInfoWindow = new google.maps.InfoWindow({
+    content: graduationMarkerContent
+  });
+  graduationMarker.addListener('click', function() {
+    graduationInfoWindow.open(map, graduationMarker);
+  });
+
+  const disneyWorldMarker = new google.maps.Marker({
+    position: {
+      lat: 28.4195503,
+      lng: -81.583381,
+    },
+    title: "Disney World"
+  });
+  disneyWorldMarker.setMap(map);
+  const disneyWorldMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Disney World</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about vacations. </p>' +
+    '<img src="/Images/DisneyWorld1.PNG" width="300" height="300">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const disneyWorldInfoWindow = new google.maps.InfoWindow({
+    content: disneyWorldMarkerContent
+  });
+  disneyWorldMarker.addListener('click', function() {
+    disneyWorldInfoWindow.open(map, disneyWorldMarker);
+  });
+
+  const chicagoMarker = new google.maps.Marker({
+    position: {
+      lat: 41.8755535,
+      lng: -87.6197232,
+    },
+    title: "Buckingham Fountain"
+  });
+  chicagoMarker.setMap(map);
+  const chicagoMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Chicago</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about Chicago. </p>' +
+    '<img src="/Images/Chicago.jpg" width="300" height="300">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const chicagoInfoWindow = new google.maps.InfoWindow({
+    content: chicagoMarkerContent
+  });
+  chicagoMarker.addListener('click', function() {
+    chicagoInfoWindow.open(map, chicagoMarker);
+  });
+
+  const atlantaMarker = new google.maps.Marker({
+    position: {
+      lat: 33.7678358,
+      lng: -84.4906432,
+    },
+    title: "Atlanta"
+  });
+  atlantaMarker.setMap(map);
+  const atlantaMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Atlanta</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about Atlanta. </p>' +
+    '<img src="/Images/Atlanta.JPG" width="300" height="200">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const atlantaInfoWindow = new google.maps.InfoWindow({
+    content: atlantaMarkerContent
+  });
+  atlantaMarker.addListener('click', function() {
+    atlantaInfoWindow.open(map, atlantaMarker);
+  });
+
+  const cPMarker = new google.maps.Marker({
+    position: {
+      lat: 41.482211,
+      lng: -82.6857093,
+    },
+    title: "Cedar Point"
+  });
+  cPMarker.setMap(map);
+  const cPMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Cedar Point</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about Cedar Point. </p>' +
+    '<img src="/Images/CedarPoint.PNG" width="160" height="375">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const cPInfoWindow = new google.maps.InfoWindow({
+    content: cPMarkerContent
+  });
+  cPMarker.addListener('click', function() {
+    cPInfoWindow.open(map, cPMarker);
+  });
+
+  const paintingMarker = new google.maps.Marker({
+    position: {
+      lat: 50.104237,
+      lng: -123.071554,
+    },
+    title: "Whistler, BC, Canada"
+  });
+  paintingMarker.setMap(map);
+  const paintingMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Whistler</h1>' +
+    '<div id="bodyContent">' + '<p> Here is info about Whistler. </p>' +
+    '<img src="/Images/painting.JPG" width="300" height="200">' +
+    '<p>Here is where I may put a link: <a href="index.html">' +
+    'Link</a> </p> </div> </div>';
+  const paintingInfoWindow = new google.maps.InfoWindow({
+    content: paintingMarkerContent
+  });
+  paintingMarker.addListener('click', function() {
+    paintingInfoWindow.open(map, paintingMarker);
+  });
 }
