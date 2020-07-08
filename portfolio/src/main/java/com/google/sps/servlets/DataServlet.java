@@ -48,24 +48,26 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String userName = getStringParameter(request, "username");
-    String comment = getStringParameter(request, "comment");
-    long timestamp = System.currentTimeMillis();
+    String userName = getStringParameter(request, "username", "Anonymous");
+    String comment = getStringParameter(request, "comment", "");
+    if (!comment.equals("")) {
+      long timestamp = System.currentTimeMillis();
 
-    Entity newComment = new Entity("Comment");
-    newComment.setProperty("Username", userName);
-    newComment.setProperty("Comment", comment);
-    newComment.setProperty("Timestamp", timestamp);
+      Entity newComment = new Entity("Comment");
+      newComment.setProperty("Username", userName);
+      newComment.setProperty("Comment", comment);
+      newComment.setProperty("Timestamp", timestamp);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(newComment);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(newComment);
+    }
     response.sendRedirect("/index.html");
   }
 
-  private String getStringParameter(HttpServletRequest request, String name) {
+  private String getStringParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
-    if (value == null) {
-      value = "";
+    if (value.equals(null) || value.equals("")) {
+      value = defaultValue;
     }
     return value;
   }
