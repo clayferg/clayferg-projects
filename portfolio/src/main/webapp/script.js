@@ -55,11 +55,11 @@ function getMessage(maxNum) {
 
 function getMessageHelper(singleComment) {
   const messageElement = document.getElementById('message-container');
-  const usernameElement = document.createElement('p');
+  const userNameElement = document.createElement('p');
   const commentElement = document.createElement('p');
-  usernameElement.innerText = "Username: " + singleComment.username;
+  userNameElement.innerText = "Username: " + singleComment.userName;
   commentElement.innerText = "Comment: " + singleComment.comment;
-  messageElement.appendChild(usernameElement);
+  messageElement.appendChild(userNameElement);
   messageElement.appendChild(commentElement);
 }
 
