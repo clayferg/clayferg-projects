@@ -41,13 +41,13 @@ public class DataServlet2 extends HttpServlet {
   private static class Comment {
     long id;
     long timestamp;
-    String username;
+    String userName;
     String comment;
 
-    public Comment(long id, long timestamp, String username, String comment) {
+    public Comment(long id, long timestamp, String userName, String comment) {
       this.id = id;
       this.timestamp = timestamp;
-      this.username = username;
+      this.userName = userName;
       this.comment = comment;
     }
   }
