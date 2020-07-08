@@ -40,6 +40,23 @@ function addFavoriteThing() {
     factContainer.innerText = 'That is all the info you get for now...';
   }
 }
+
+function getUserInfo() {
+  fetch('login-check').then((response) => response.json()).then((loginInfo) => {
+    if (loginInfo.isLoggedIn) {
+      console.log(loginInfo.logoutLink);
+      document.getElementById("comment-form").style.display = "block";
+      document.getElementById("login-logout").href = loginInfo.logoutLink;
+      document.getElementById("login-logout").innerText = "Logout Here"; 
+    } else {
+      console.log(loginInfo.loginLink); 
+      document.getElementById("comment-form").style.display = "none";
+      document.getElementById("login-logout").href = loginInfo.loginLink;
+      document.getElementById("login-logout").innerText = "Login Here"; 
+    }
+  })
+}
+
 // Retreive Messages from Servlet
 function getMessage(maxNum) {
   if (maxNum == null || maxNum == "") {
