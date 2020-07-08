@@ -87,6 +87,7 @@ public class DataServlet extends HttpServlet {
     }
 
     ArrayList<Comment> comments = new ArrayList<>();
+
     for (Entity entity : results.asIterable()) {
       if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
