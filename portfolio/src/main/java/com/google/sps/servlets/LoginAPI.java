@@ -40,39 +40,42 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login-check")
 public class LoginAPI extends HttpServlet {
 
-  private static class Comment {
-    long id;
-    long timestamp;
-    String userName;
-    String comment;
+  private static class LoginInfo {
+    boolean isLoggedIn; 
+    String loginLink; 
+    String logoutLink; 
 
-    public Comment(long id, long timestamp, String userName, String comment) {
-      this.id = id;
-      this.timestamp = timestamp;
-      this.userName = userName;
-      this.comment = comment;
+    public LoginInfo(boolean isLoggedIn, String loginLink, String logoutLink) {
+      this.isLoggedIn = isLoggedIn; 
+      this.loginLink = loginLink; 
+      this.logoutLink = logoutLink; 
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
 
     UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/index.html"; 
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut); 
-      response.getWriter().println("<p>You're logged in, good job.</p>");
-      response.getWriter().println("<p>Your email is: " + userEmail + "!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>"); 
+    boolean isLoggedIn = userService.isUserLoggedIn(); 
+    String loginLink; 
+    String logoutLink; 
+    if (isLoggedIn) {
+      logoutLink = userService.createLogoutURL("/index.html");
+      loginLink = null; 
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);  
-      response.getWriter().println("<p>Hello stranger.</p>");
-      response.getWriter().println("<p>You're not logged in right now.");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+      loginLink = userService.createLoginURL("/index.html");
+      logoutLink = null; 
     }
+    LoginInfo user = new LoginInfo(isLoggedIn, loginLink, logoutLink); 
+
+    response.getWriter().println(convertToJsonUsingGson(user));
+  }
+
+  private String convertToJsonUsingGson(LoginInfo input) {
+    Gson gson = new Gson();
+    String json = gson.toJson(input);
+    return json;
   }  
 
 }

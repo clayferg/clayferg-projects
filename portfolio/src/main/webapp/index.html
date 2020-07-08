@@ -38,7 +38,7 @@
   </style>
 </head>
 
-<body onload="getMessage(document.getElementById('max-num-comments').value)">
+<body onload="getUserInfo(); getMessage(document.getElementById('max-num-comments').value);">
   <!--
       Adapted from: 
       https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_topnav
@@ -72,22 +72,22 @@
         href="https://www.cs.princeton.edu/courses/archive/spring20/cos226/assignments.php">
         Projects from COS 226 Algorithms and Data Structures Course </a> </li>
   </ul>
-  <form action="/data" method="POST">
+  <form id="comment-form" action="/data" method="POST">
     <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username"></input><br>
-    <label for="comment">Comment:</input><br>
+      <input type="text" id="username" name="username"></input><br>
+    <label for="comment">Comment:</label><br>
       <input type="text" id="comment" name="comment"></input>
     <input type="submit" name="Submit" value="Submit Comment!"></input>
   </form>
   <br>
-  <form action="javascript:void(0);">
+  <form id="num-comment-form" action="javascript:void(0);">
     <label for="max-num-comments">Maximum Number of Comments Shown</label><br>
-    <select name="max-num-comments" id="max-num-comments">
-      <option value="1">1</option>
-      <option value="3">3</option>
-      <option value="5">5</option>
-      <option value="10">10</option>
-    </select>
+      <select name="max-num-comments" id="max-num-comments">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+      </select>
     <button
       onclick="getMessage(document.getElementById('max-num-comments').value)">Show
       Comments</button>
@@ -95,6 +95,7 @@
   </form>
   <p><strong>Comment Section:</strong></p>
   <div id="message-container"></div>
+  <a href="" id="login-logout"></a>
   <nav style="text-align:center">
     <a href="index.html"> Home Page |</a>
     <a href="aboutMe.html"> About Me |</a>
