@@ -59,7 +59,6 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(newComment);
-
     response.sendRedirect("/index.html");
   }
 
@@ -88,6 +87,9 @@ public class DataServlet extends HttpServlet {
     }
 
     ArrayList<Comment> comments = new ArrayList<>();
+
+    int maxComments = Integer.parseInt(request.getParameter("max-num-comments"));
+
     for (Entity entity : results.asIterable()) {
       if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
