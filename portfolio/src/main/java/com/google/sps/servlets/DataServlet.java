@@ -35,25 +35,25 @@ public class DataServlet extends HttpServlet {
   private static class Comment {
     long id;
     long timestamp;
-    String username;
+    String userName;
     String comment;
 
-    public Comment(long id, long timestamp, String username, String comment) {
+    public Comment(long id, long timestamp, String userName, String comment) {
       this.id = id;
       this.timestamp = timestamp;
-      this.username = username;
+      this.userName = userName;
       this.comment = comment;
     }
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String username = getStringParameter(request, "username");
+    String userName = getStringParameter(request, "username");
     String comment = getStringParameter(request, "comment");
     long timestamp = System.currentTimeMillis();
 
     Entity newComment = new Entity("Comment");
-    newComment.setProperty("Username", username);
+    newComment.setProperty("Username", userName);
     newComment.setProperty("Comment", comment);
     newComment.setProperty("Timestamp", timestamp);
 
@@ -92,10 +92,10 @@ public class DataServlet extends HttpServlet {
       if (maxNumberComments == 0) break; 
       long id = entity.getKey().getId();
       long timestamp = (long) entity.getProperty("Timestamp");
-      String username = (String) entity.getProperty("Username");
+      String userName = (String) entity.getProperty("Username");
       String commentText = (String) entity.getProperty("Comment");
 
-      Comment comment = new Comment(id, timestamp, username, commentText);
+      Comment comment = new Comment(id, timestamp, userName, commentText);
       comments.add(comment);
       maxNumberComments--; 
     }
