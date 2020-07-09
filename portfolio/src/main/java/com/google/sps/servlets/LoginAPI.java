@@ -42,13 +42,11 @@ public class LoginAPI extends HttpServlet {
 
   private static class LoginInfo {
     boolean isLoggedIn; 
-    String loginLink; 
-    String logoutLink; 
+    String link;
 
-    public LoginInfo(boolean isLoggedIn, String loginLink, String logoutLink) {
+    public LoginInfo(boolean isLoggedIn, String link) {
       this.isLoggedIn = isLoggedIn; 
-      this.loginLink = loginLink; 
-      this.logoutLink = logoutLink; 
+      this.link = link; 
     }
   }
 
@@ -58,16 +56,8 @@ public class LoginAPI extends HttpServlet {
 
     UserService userService = UserServiceFactory.getUserService();
     boolean isLoggedIn = userService.isUserLoggedIn(); 
-    String loginLink; 
-    String logoutLink; 
-    if (isLoggedIn) {
-      logoutLink = userService.createLogoutURL("/index.html");
-      loginLink = null; 
-    } else {
-      loginLink = userService.createLoginURL("/index.html");
-      logoutLink = null; 
-    }
-    LoginInfo user = new LoginInfo(isLoggedIn, loginLink, logoutLink); 
+    String link = (isLoggedIn) ? userService.createLogoutURL("/index.html") : userService.createLoginURL("/index.html");
+    LoginInfo user = new LoginInfo(isLoggedIn, link); 
 
     response.getWriter().println(convertToJsonUsingGson(user));
   }
