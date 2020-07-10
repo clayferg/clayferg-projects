@@ -43,16 +43,13 @@ function addFavoriteThing() {
 
 function getUserInfo() {
   fetch('login-check').then((response) => response.json()).then((loginInfo) => {
+    document.getElementById("login-logout").href = loginInfo.link; 
     if (loginInfo.isLoggedIn) {
-      console.log(loginInfo.logoutLink);
       document.getElementById("comment-form").style.display = "block";
-      document.getElementById("login-logout").href = loginInfo.logoutLink;
       document.getElementById("login-logout").innerText = "Logout Here"; 
       document.getElementById("username").value = loginInfo.userEmail; 
     } else {
-      console.log(loginInfo.loginLink); 
       document.getElementById("comment-form").style.display = "none";
-      document.getElementById("login-logout").href = loginInfo.loginLink;
       document.getElementById("login-logout").innerText = "Login Here"; 
     }
   })
