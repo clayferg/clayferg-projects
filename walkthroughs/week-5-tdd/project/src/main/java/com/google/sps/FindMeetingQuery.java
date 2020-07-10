@@ -23,8 +23,6 @@ import java.util.Comparator;
 import java.util.Set;
 
 public final class FindMeetingQuery {
-  private Collection<TimeRange> result; 
-  private Iterator neededGuests;   
   private final int END_OF_DAY = 24 * 60; 
 
   // Checks if anyone who must be at the requested meeting is at the given event
@@ -32,6 +30,17 @@ public final class FindMeetingQuery {
     for (String person : request.getAttendees()) {
         if (event.getAttendees().contains(person)) return true;
       }
+      return false; 
+  }
+
+  // Checks if anyone who must be at the requested meeting is at the given event
+  private boolean isEventImportantWithOptional(Event event, MeetingRequest request) {
+    for (String person : request.getAttendees()) {
+        if (event.getAttendees().contains(person)) return true;
+    }
+    for (String person : request.getOptionalAttendees()) {
+        if (event.getAttendees().contains(person)) return true;
+    }
       return false; 
   }
 
@@ -54,13 +63,16 @@ public final class FindMeetingQuery {
       };
   
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    
-    // Find out who has to be at the meeting
-    neededGuests = request.getAttendees().iterator();
+    Collection<TimeRange> resultWithOptionalAttendees = this.optionalQuery(events, request); 
+    // If a meeting works with optional guests or there were only optional guests requested
+    // return result considering optional guests
+    if (!resultWithOptionalAttendees.isEmpty() || (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty())) { 
+        return resultWithOptionalAttendees; 
+    }
     // Find out how long they have to be at the meeting
     long duration = request.getDuration(); 
     // Set the collection of possible times to be empty
-    result = new ArrayList<TimeRange>(); 
+    Collection<TimeRange> result = new ArrayList<TimeRange>(); 
 
     // window referring to the opening and closing of the window of time where the meeting could be done
     int windowStart = 0; 
@@ -100,6 +112,69 @@ public final class FindMeetingQuery {
         endPointer++; 
       } else {
           if (isEventImportant(eventsOrderedByStart[startPointer], request)) {
+            windowClose = nextMeetingStart; 
+            if (problemEvents.isEmpty()) {
+              if ((windowClose - windowStart) >= duration) {
+                result.add(TimeRange.fromStartEnd(windowStart, windowClose, false)); 
+              }
+            }
+            problemEvents.add(eventsOrderedByStart[startPointer]); 
+          }
+          startPointer++; 
+      }
+  }
+  if (windowStart < END_OF_DAY && (END_OF_DAY - windowStart) >= duration) {
+    result.add(TimeRange.fromStartEnd(windowStart, END_OF_DAY, false)); 
+  }
+
+  return result; 
+  }
+
+  private Collection<TimeRange> optionalQuery(Collection<Event> events, MeetingRequest request) {
+    
+    // Find out how long they have to be at the meeting
+    long duration = request.getDuration(); 
+    // Set the collection of possible times to be empty
+    Collection<TimeRange> result = new ArrayList<TimeRange>(); 
+
+    // window referring to the opening and closing of the window of time where the meeting could be done
+    int windowStart = 0; 
+    int windowClose = 0; 
+
+    Object[] objectArray = events.toArray(); 
+    Event[] eventsOrderedByStart = new Event[objectArray.length]; 
+    Event[] eventsOrderedByEnd = new Event[objectArray.length];
+
+    for (int i = 0; i < events.toArray().length; i++) {
+      eventsOrderedByStart[i] = (Event) objectArray[i];  
+      eventsOrderedByEnd[i] = (Event) objectArray[i]; 
+    }
+
+    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START);
+    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END);
+    int startPointer = 0; 
+    int endPointer = 0; 
+    int nextMeetingEnd = 0; 
+    int nextMeetingStart = 0; 
+    Set<Event> problemEvents = new HashSet<>();
+
+
+
+    // Loop until all meetings have ended
+    while(endPointer < eventsOrderedByEnd.length) {
+    // What comes first, the end of a meeting or the start of one
+      nextMeetingEnd = eventsOrderedByEnd[endPointer].getWhen().end(); 
+      if (startPointer < eventsOrderedByStart.length) {
+      nextMeetingStart = eventsOrderedByStart[startPointer].getWhen().start(); 
+      }
+      if (startPointer == eventsOrderedByStart.length || nextMeetingEnd <= nextMeetingStart) {
+        if (problemEvents.contains(eventsOrderedByEnd[endPointer])) {
+          windowStart = nextMeetingEnd; 
+          problemEvents.remove(eventsOrderedByEnd[endPointer]); 
+        }
+        endPointer++; 
+      } else {
+          if (isEventImportantWithOptional(eventsOrderedByStart[startPointer], request)) {
             windowClose = nextMeetingStart; 
             if (problemEvents.isEmpty()) {
               if ((windowClose - windowStart) >= duration) {
