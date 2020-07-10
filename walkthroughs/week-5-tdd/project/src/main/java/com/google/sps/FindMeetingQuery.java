@@ -25,6 +25,7 @@ import java.util.Set;
 public final class FindMeetingQuery {
   private Collection<TimeRange> result; 
   private Iterator neededGuests;   
+  private final int END_OF_DAY = 24 * 60; 
 
   // Checks if anyone who must be at the requested meeting is at the given event
   private boolean isEventImportant(Event event, MeetingRequest request) {
@@ -86,7 +87,7 @@ public final class FindMeetingQuery {
 
     // Loop until all meetings have ended
     while(endPointer < eventsOrderedByEnd.length) {
-    // What comes first, the end of a meeting or a start of one
+    // What comes first, the end of a meeting or the start of one
       nextMeetingEnd = eventsOrderedByEnd[endPointer].getWhen().end(); 
       if (startPointer < eventsOrderedByStart.length) {
       nextMeetingStart = eventsOrderedByStart[startPointer].getWhen().start(); 
@@ -110,21 +111,10 @@ public final class FindMeetingQuery {
           startPointer++; 
       }
   }
-  if (windowStart < (24 * 60) && (24*60 - windowStart) >= duration) {
-    result.add(TimeRange.fromStartEnd(windowStart, 24*60, false)); 
+  if (windowStart < END_OF_DAY && (END_OF_DAY - windowStart) >= duration) {
+    result.add(TimeRange.fromStartEnd(windowStart, END_OF_DAY, false)); 
   }
 
   return result; 
   }
 }
-// Note the current time
-
-        // If it's the end of an important meeting:
-            // Remove the event from problemEvents list
-            // Set current time to last time
-        // If it's the start of an important meeting:
-            // Are there any problemEvents 
-                // If not, then is the distance between last time and current time > duration
-                    // If it is, you've found yourself a good time, add it to the results collection
-            // Hash event to a problemsEvents list
-            // 
