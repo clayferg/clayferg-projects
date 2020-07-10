@@ -40,39 +40,32 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login-check")
 public class LoginAPI extends HttpServlet {
 
-  private static class Comment {
-    long id;
-    long timestamp;
-    String userName;
-    String comment;
+  private static class LoginInfo {
+    boolean isLoggedIn; 
+    String link;
 
-    public Comment(long id, long timestamp, String userName, String comment) {
-      this.id = id;
-      this.timestamp = timestamp;
-      this.userName = userName;
-      this.comment = comment;
+    public LoginInfo(boolean isLoggedIn, String link) {
+      this.isLoggedIn = isLoggedIn; 
+      this.link = link; 
     }
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
 
     UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/index.html"; 
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut); 
-      response.getWriter().println("<p>You're logged in, good job.</p>");
-      response.getWriter().println("<p>Your email is: " + userEmail + "!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>"); 
-    } else {
-      String urlToRedirectToAfterUserLogsIn = "/index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);  
-      response.getWriter().println("<p>Hello stranger.</p>");
-      response.getWriter().println("<p>You're not logged in right now.");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-    }
+    boolean isLoggedIn = userService.isUserLoggedIn(); 
+    String link = (isLoggedIn) ? userService.createLogoutURL("/index.html") : userService.createLoginURL("/index.html");
+    LoginInfo user = new LoginInfo(isLoggedIn, link); 
+
+    response.getWriter().println(convertToJsonUsingGson(user));
+  }
+
+  private String convertToJsonUsingGson(LoginInfo input) {
+    Gson gson = new Gson();
+    String json = gson.toJson(input);
+    return json;
   }  
 
 }

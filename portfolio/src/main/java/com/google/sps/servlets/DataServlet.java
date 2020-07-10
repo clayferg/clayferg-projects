@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -37,12 +39,14 @@ public class DataServlet extends HttpServlet {
     long timestamp;
     String userName;
     String comment;
+    String userEmail; 
 
-    public Comment(long id, long timestamp, String userName, String comment) {
+    public Comment(long id, long timestamp, String userName, String comment, String userEmail) {
       this.id = id;
       this.timestamp = timestamp;
       this.userName = userName;
       this.comment = comment;
+      this.userEmail = userEmail; 
     }
   }
 
@@ -52,11 +56,14 @@ public class DataServlet extends HttpServlet {
     String comment = getStringParameter(request, "comment", "");
     if (!comment.equals("")) {
       long timestamp = System.currentTimeMillis();
+      UserService userService = UserServiceFactory.getUserService();
+      String userEmail = userService.getCurrentUser().getEmail();
 
       Entity newComment = new Entity("Comment");
       newComment.setProperty("Username", userName);
       newComment.setProperty("Comment", comment);
       newComment.setProperty("Timestamp", timestamp);
+      newComment.setProperty("Email", userEmail);
 
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(newComment);
@@ -98,8 +105,9 @@ public class DataServlet extends HttpServlet {
       long timestamp = (long) entity.getProperty("Timestamp");
       String userName = (String) entity.getProperty("Username");
       String commentText = (String) entity.getProperty("Comment");
+      String userEmail = (String) entity.getProperty("Email"); 
 
-      Comment comment = new Comment(id, timestamp, userName, commentText);
+      Comment comment = new Comment(id, timestamp, userName, commentText, userEmail);
       comments.add(comment);
       maxNumberComments--; 
     }
