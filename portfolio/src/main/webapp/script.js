@@ -288,9 +288,9 @@ function createMap() {
   homeMarker.setMap(map);
   const homeMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' + '<h1 id="firstHeading" class="firstHeading">My Home</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about my house </p>' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '<div id="bodyContent">' + '<p> This is my house and where I\'ll be working from for the summer </p>' +
+    '<img src="/Images/House.jpg" width="300" height="300">'
+    '</div> </div>';
   const homeInfoWindow = new google.maps.InfoWindow({
     content: homeMarkerContent
   });
@@ -306,10 +306,11 @@ function createMap() {
   });
   schoolMarker.setMap(map);
   const schoolMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
-    '</div>' + '<h1 id="firstHeading" class="firstHeading">My School</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Princeton </p>' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div>' + '<h1 id="firstHeading" class="firstHeading">Princeton University</h1>' +
+    '<div id="bodyContent">' + '<p> I\'ll be a(n online) sophomore this fall. </p>' +
+    '<img src="/Images/Princeton.jpg" width="300" height="300">' +
+    '<p>More info on Princeton: <a href="https://www.princeton.edu/">' +
+    'www.princeton.edu</a> </p> </div> </div>';
   const schoolInfoWindow = new google.maps.InfoWindow({
     content: schoolMarkerContent
   });
@@ -327,9 +328,11 @@ function createMap() {
   const highSchoolMarkerContent = '<div id="content">' +
     '<div id="siteNotice">' + '</div>' +
     '<h1 id="firstHeading" class="firstHeading">My High School</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about My High School</p>' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '<div id="bodyContent">' + '<p> Where I spent most of my time' + 
+    ' (even summers for camp) as a kid.</p>' +
+    '<img src="/Images/Hawken.jpg" width="300" height="300">' +
+    '<p>More info on Hawken: <a href="https://www.hawken.edu/">' +
+    'www.hawken.edu</a> </p> </div> </div>';
   const highSchoolInfoWindow = new google.maps.InfoWindow({
     content: highSchoolMarkerContent
   });
@@ -347,9 +350,11 @@ function createMap() {
   const fiveGuysMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">My Favorite Restaurant</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Five Guys </p>' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '<div id="bodyContent">' + '<p> The burgers. Perfect. The fries. Copious.' + 
+    ' The price. A little high, but still worth it. </p>' +
+    '<img src="/Images/Five.jpeg" width="350" height="300">'+
+    '<p>Get yourself a deivery: <a href="https://www.fiveguys.com/">' +
+    'www.fiveguys.com</a> </p> </div> </div>';
   const fiveGuysInfoWindow = new google.maps.InfoWindow({
     content: fiveGuysMarkerContent
   });
@@ -367,9 +372,11 @@ function createMap() {
   const rMFHMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Rocket Mortgage FieldHouse</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about RMFH. </p>' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '<div id="bodyContent">' + '<p> This is where the Cleveland Cavaliers play.' + 
+    ' We had a few really good years...we don\'t talk about the others.</p>' +
+    '<img src="/Images/RMFH.jpg" width="300" height="300">' +
+    '<p>More info on the arena: <a href="https://www.rocketmortgagefieldhouse.com/">' +
+    'www.rocketmortgagefieldhouse.com/</a> </p> </div> </div>';
   const rMFHInfoWindow = new google.maps.InfoWindow({
     content: rMFHMarkerContent
   });
@@ -390,10 +397,10 @@ function createMap() {
   const graduationMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Kristen\'s Graduation</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Kristen. </p>' +
+    '<div id="bodyContent">' + '<p> My sister just graduated college,' + 
+    ' so we visited her campus to take pictures. </p>' +
     '<img src="/Images/Graduation.jpg" width="300" height="300">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div> </div>';
   const graduationInfoWindow = new google.maps.InfoWindow({
     content: graduationMarkerContent
   });
@@ -412,10 +419,9 @@ function createMap() {
   const disneyWorldMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Disney World</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about vacations. </p>' +
+    '<div id="bodyContent">' + '<p> Family vacations >>> </p>' +
     '<img src="/Images/DisneyWorld1.PNG" width="300" height="300">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div> </div>';
   const disneyWorldInfoWindow = new google.maps.InfoWindow({
     content: disneyWorldMarkerContent
   });
@@ -434,10 +440,10 @@ function createMap() {
   const chicagoMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Chicago</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Chicago. </p>' +
+    '<div id="bodyContent">' + '<p> This is a picture I took when I got '+
+    'a chance to attend the Lollapalooza music festival in Chicago!</p>' +
     '<img src="/Images/Chicago.jpg" width="300" height="300">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div> </div>';
   const chicagoInfoWindow = new google.maps.InfoWindow({
     content: chicagoMarkerContent
   });
@@ -456,10 +462,9 @@ function createMap() {
   const atlantaMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Atlanta</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Atlanta. </p>' +
+    '<div id="bodyContent">' + '<p> Here\'s me visiting family in Atlanta for my cousin\'s graduation! </p>' +
     '<img src="/Images/Atlanta.JPG" width="300" height="200">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div> </div>';
   const atlantaInfoWindow = new google.maps.InfoWindow({
     content: atlantaMarkerContent
   });
@@ -478,10 +483,10 @@ function createMap() {
   const cPMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Cedar Point</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Cedar Point. </p>' +
+    '<div id="bodyContent">' + '<p> If you come to Ohio, check out the roller coaster capital of the world! </p>' +
     '<img src="/Images/CedarPoint.PNG" width="160" height="375">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '<p>More info on Cedar Point: <a href="https://www.cedarpoint.com/">' +
+    'www.cedarpoint.com</a> </p> </div> </div>';
   const cPInfoWindow = new google.maps.InfoWindow({
     content: cPMarkerContent
   });
@@ -500,10 +505,9 @@ function createMap() {
   const paintingMarkerContent = '<div id="content">' + '<div id="siteNotice">' +
     '</div>' +
     '<h1 id="firstHeading" class="firstHeading">Whistler</h1>' +
-    '<div id="bodyContent">' + '<p> Here is info about Whistler. </p>' +
+    '<div id="bodyContent">' + '<p> Painting in a different country, wow, <em> I\'m </em> so cultured. </p>' +
     '<img src="/Images/painting.JPG" width="300" height="200">' +
-    '<p>Here is where I may put a link: <a href="index.html">' +
-    'Link</a> </p> </div> </div>';
+    '</div> </div>';
   const paintingInfoWindow = new google.maps.InfoWindow({
     content: paintingMarkerContent
   });
