@@ -74,8 +74,7 @@ public final class FindMeetingQuery {
   private boolean noRequiredAttendees(MeetingRequest request) {
     boolean noRequiredAttendees = false; 
     for (String person : request.getAttendees()) {
-      String check = person; 
-      if (check.equals(null) || check.equals("")) noRequiredAttendees = true; 
+      if (person.equals(null) || person.equals("")) noRequiredAttendees = true; 
       break; 
     }
     return noRequiredAttendees; 
