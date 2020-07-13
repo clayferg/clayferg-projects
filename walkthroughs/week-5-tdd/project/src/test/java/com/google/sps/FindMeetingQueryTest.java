@@ -470,7 +470,7 @@ public final class FindMeetingQueryTest {
   public void justBusyOptionalAttendees() {
     
     // No mandatory attendees, just two optional attendees with no gaps in their schedules. 
-    // query should return that no time is available.
+    // query should return times with most amouunt of guests possible (1). 
     // Events  : |----A---|     |--A--|
     //                    |--B--|   |--------B--------|
     // Day     : |------------------------------------|
@@ -480,11 +480,11 @@ public final class FindMeetingQueryTest {
         Arrays.asList(
             new Event(
                 "Event 1",
-                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.getTimeInMinutes(8, 30), true),
+                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.getTimeInMinutes(8, 30), false),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 2",
-                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(8, 30), TimeRange.getTimeInMinutes(9, 30), true),
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(8, 30), TimeRange.getTimeInMinutes(9, 30), false),
                 Arrays.asList(PERSON_B)),
             new Event(
                 "Event 2",
@@ -493,14 +493,18 @@ public final class FindMeetingQueryTest {
             new Event(
                 "Event 2",
                 TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(11, 00), TimeRange.END_OF_DAY, true),
-                Arrays.asList(PERSON_A)));
+                Arrays.asList(PERSON_B)));
         
     MeetingRequest request = new MeetingRequest(NO_ATTENDEES, DURATION_30_MINUTES);
     request.addOptionalAttendee(PERSON_A); 
     request.addOptionalAttendee(PERSON_B); 
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected = 
-    Arrays.asList();
+    Arrays.asList(
+        TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.getTimeInMinutes(8, 30), false), 
+        TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(8, 30), TimeRange.getTimeInMinutes(9, 30), false),
+        TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(9, 30), TimeRange.getTimeInMinutes(11, 00), false),
+        TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(11, 30), TimeRange.END_OF_DAY, true));
 
     Assert.assertEquals(expected, actual);
   }

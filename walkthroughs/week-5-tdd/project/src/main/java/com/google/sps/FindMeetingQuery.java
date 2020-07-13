@@ -16,6 +16,8 @@ package com.google.sps;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -27,8 +29,12 @@ import java.lang.Math;
 import java.io.*; 
 
 public final class FindMeetingQuery {
-  private final int END_OF_DAY = 24 * 60; 
+  private final int END_OF_DAY = 24 * 60; // Total number of minutes in a day
 
+  // I represented the amount of available optional people with a set of "Optional Time Ranges" spanning the entire day.
+  // Each Optional Time Range has an associated number of people available. For example, if there were 5 total optional
+  // attendees for a request and 3 are busy from 8-9. Then the OTR containing the time range from 8-9 has 2 as its number
+  // of people available. 
   private static class OptionalTimeRange {
     private TimeRange time; 
     private int numPeopleAvailable; 
@@ -45,7 +51,6 @@ public final class FindMeetingQuery {
     public int getNumPeopleAvailable() {
         return numPeopleAvailable; 
     }
-
   }
 
   // Checks if anyone who must be at the requested meeting is at the given event
@@ -56,13 +61,26 @@ public final class FindMeetingQuery {
       return false; 
   }
 
-  // Checks if anyone who must be at the requested meeting is at the given event
+  // Checks if anyone who is optional for the requested meeting is at the given event
   private boolean isEventImportantWithOptional(Event event, MeetingRequest request) {
     for (String person : request.getOptionalAttendees()) {
         if (event.getAttendees().contains(person)) return true;
     }
       return false; 
   }
+
+  // While using request.getAttendees().isEmpty() to find if there were any required attendees worked for the tests,
+  // It caused problems when used on the development server, so I made this method to compensate. 
+  private boolean noRequiredAttendees(MeetingRequest request) {
+    boolean noRequiredAttendees = false; 
+    for (String person : request.getAttendees()) {
+      String check = person; 
+      if (check.equals(null) || check.equals("")) noRequiredAttendees = true; 
+      break; 
+    }
+    return noRequiredAttendees; 
+  }
+  
 
      /** A comparator for sorting events by their start time in ascending order. */
   private static final Comparator<Event> ORDER_EVENT_BY_START =
@@ -83,20 +101,10 @@ public final class FindMeetingQuery {
       };
   
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
- System.out.println("New test"); 
- /*   
-    Collection<TimeRange> resultWithOptionalAttendees = this.optionalQuery(events, request); 
-    // If a meeting works with optional guests or there were only optional guests requested
-    // return result considering optional guests
-    if (!resultWithOptionalAttendees.isEmpty() || (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty())) { 
-        return resultWithOptionalAttendees; 
-    }
-*/ 
 
-    // Find out how long they have to be at the meeting
-    long duration = request.getDuration(); 
-    // Set the collection of possible times to be empty
-    Collection<TimeRange> result = new ArrayList<TimeRange>(); 
+    long requestedMeetingDuration = request.getDuration(); 
+
+    Collection<TimeRange> timesForRequiredGuests = new ArrayList<TimeRange>(); 
 
     // window referring to the opening and closing of the window of time where the meeting could be done
     int windowStart = 0; 
@@ -111,35 +119,35 @@ public final class FindMeetingQuery {
       eventsOrderedByEnd[i] = (Event) objectArray[i]; 
     }
 
-    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START);
-    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END);
-    int startPointer = 0; 
-    int endPointer = 0; 
-    int nextMeetingEnd = 0; 
-    int nextMeetingStart = 0; 
-    Set<Event> problemEvents = new HashSet<>();
+    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START); // Events ordered by start time
+    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END); // Events ordered by end time
+    int startPointer = 0; // startPointer will help move through each Event in the eventsOrderedByStart array
+    int endPointer = 0; // endPointer will help move through each Event in the eventsOrderedByEnd array
+    int nextMeetingEndTime = 0; 
+    int nextMeetingStartTime = 0; 
+    Set<Event> problemEvents = new HashSet<>(); // Keeps track of the events which have relevant guests
 
-
-
-    // Loop until all meetings have ended
+    // While there are still meetings which haven't ended, this loop adds and removes
+    // events with required guests for the meeting to a list of problem events. 
+    // If the list of problem events is empty for a long enough time, the window will
+    // be recorded as a possible meeting time. 
     while(endPointer < eventsOrderedByEnd.length) {
-    // What comes first, the end of a meeting or the start of one
-      nextMeetingEnd = eventsOrderedByEnd[endPointer].getWhen().end(); 
+      nextMeetingEndTime = eventsOrderedByEnd[endPointer].getWhen().end(); 
       if (startPointer < eventsOrderedByStart.length) {
-      nextMeetingStart = eventsOrderedByStart[startPointer].getWhen().start(); 
+      nextMeetingStartTime = eventsOrderedByStart[startPointer].getWhen().start(); 
       }
-      if (startPointer == eventsOrderedByStart.length || nextMeetingEnd <= nextMeetingStart) {
+      if (startPointer == eventsOrderedByStart.length || nextMeetingEndTime <= nextMeetingStartTime) {
         if (problemEvents.contains(eventsOrderedByEnd[endPointer])) {
-          windowStart = nextMeetingEnd; 
+          windowStart = nextMeetingEndTime; 
           problemEvents.remove(eventsOrderedByEnd[endPointer]); 
         }
         endPointer++; 
       } else {
           if (isEventImportant(eventsOrderedByStart[startPointer], request)) {
-            windowClose = nextMeetingStart; 
+            windowClose = nextMeetingStartTime; 
             if (problemEvents.isEmpty()) {
-              if ((windowClose - windowStart) >= duration) {
-                result.add(TimeRange.fromStartEnd(windowStart, windowClose, false)); 
+              if ((windowClose - windowStart) >= requestedMeetingDuration) {
+                timesForRequiredGuests.add(TimeRange.fromStartEnd(windowStart, windowClose, false)); 
               }
             }
             problemEvents.add(eventsOrderedByStart[startPointer]); 
@@ -147,177 +155,77 @@ public final class FindMeetingQuery {
           startPointer++; 
       }
   }
-  if (windowStart < END_OF_DAY && (END_OF_DAY - windowStart) >= duration) {
-    result.add(TimeRange.fromStartEnd(windowStart, END_OF_DAY, false)); 
+  if (windowStart < END_OF_DAY && (END_OF_DAY - windowStart) >= requestedMeetingDuration) {
+    timesForRequiredGuests.add(TimeRange.fromStartEnd(windowStart, END_OF_DAY, false)); 
   }
 
-  Queue<OptionalTimeRange> optionalRanges = this.optionalQueryHelper(events, request); 
-   for (OptionalTimeRange o : optionalRanges) {
-    System.out.println(o.getTime() + " " + o.getNumPeopleAvailable()); 
-  }
+  Queue<OptionalTimeRange> optionalRanges = this.optionalQueryHelper(events, request); // Collection of "Optional Time Ranges" (Explained near top of class)
 
-  int champ = 0; 
-  Collection<TimeRange> resultAfterOptional = new ArrayList<>(); 
-  OptionalTimeRange otr = optionalRanges.remove(); 
-  int start = 0; 
-
- 
-  if (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty()) {
-    if (otr.getTime().duration() >= duration) {
-      champ = otr.getNumPeopleAvailable(); 
-      resultAfterOptional.add(otr.getTime()); 
-
-      for (OptionalTimeRange possibleMeetTime : optionalRanges) {
-        if (possibleMeetTime.getNumPeopleAvailable() > champ && possibleMeetTime.getTime().duration() >= duration) {
-          champ = possibleMeetTime.getNumPeopleAvailable(); 
-          resultAfterOptional.clear(); 
-        }
-        if (possibleMeetTime.getNumPeopleAvailable() >= champ && possibleMeetTime.getTime().duration() >= duration) {
-          resultAfterOptional.add(possibleMeetTime.getTime()); 
-        }
+  int champ = 0; // highest amount of optional guests avaialable 
+  Collection<TimeRange> optimalTimesForMeeting = new ArrayList<>();  
+  
+  if ((this.noRequiredAttendees(request) || request.getAttendees().isEmpty()) && !request.getOptionalAttendees().isEmpty()) { // All requested attendees are optional
+    for (OptionalTimeRange possibleMeetTime : optionalRanges) {
+      if (possibleMeetTime.getNumPeopleAvailable() > champ && possibleMeetTime.getTime().duration() >= requestedMeetingDuration) {
+        champ = possibleMeetTime.getNumPeopleAvailable(); 
+        optimalTimesForMeeting.clear(); 
+      }
+      if (possibleMeetTime.getNumPeopleAvailable() >= champ && possibleMeetTime.getTime().duration() >= requestedMeetingDuration) {
+        optimalTimesForMeeting.add(possibleMeetTime.getTime()); 
       }
     }
-  } else {
-  // While there are more possible meeting times
-  for (TimeRange time : result) {
-    // See if the start time of the current meeting time is contained in this OptionalTimeRange
+  } else { // Any case other than all requested attendees are optional
+    
+    windowStart = 0; // still representing the beginning of a window for a meeting
+    OptionalTimeRange otr = optionalRanges.remove();
+
+  for (TimeRange time : timesForRequiredGuests) {
+    // Finds the "optional time range" this potential meeting time range (based on the required guests) starts in
     while (!otr.getTime().contains(time.start())) {
         otr = optionalRanges.remove(); 
-        // Store the OptionalTimeRange this meeting time starts in
     }
-    // Use "start" to store when this possible meeting time started 
-    start = time.start(); 
-    System.out.println(otr.getTime() + " " + time);
-    while (start != time.end()) { 
-    // What comes first? the end of the OptionalTimeRange or the end of the possible meeting time?
-    if (otr.getTime().end() < time.end()) {    
-    // If it's the OptionalTimeRange
-        // Is there enough time between the possible start time and the end of the OptionalTimeRange to have a meeting
-        if (duration <= otr.getTime().end() - start) {
-            // If so, how does the number of guests compare to the champion
-            if (otr.getNumPeopleAvailable() > champ) {
-            // If more:
-                // Clear out your current resultBin
-                resultAfterOptional.clear(); 
-                // Update the champion to this number
-                champ = otr.getNumPeopleAvailable(); 
-            }
-            // If equal or more
-            if(otr.getNumPeopleAvailable() >= champ) {
-                // Add from the "start", to the end of the OptionalMeetingRange
-                resultAfterOptional.add(TimeRange.fromStartEnd(start, otr.getTime().end(), true)); 
-            }
-        }
-       // Set start to the end of the OptionalTimeRange
-        start = otr.getTime().end(); 
-        // dequeue next OptionalTimeRange
-        otr = optionalRanges.remove(); 
-        // Return to the top of this small loop
-    } else {
-        // If it's the end of the possible meeting time
-        if (duration <= time.end() - start) {
-        // Is the duration enough? If not, skip to next possible time step
-            // how does the OptionalTimeRange compare to the champ
-            // If more:
-            if (otr.getNumPeopleAvailable() > champ) {
-                // Clear out your current resultBin
-                resultAfterOptional.clear();
-                // Update the champion to this number
-                champ = otr.getNumPeopleAvailable();
-            }
-            // If more or equal:
-            if (otr.getNumPeopleAvailable() >= champ) {
-                // Add from the "start", to the end of the possible meeting time
-                resultAfterOptional.add(TimeRange.fromStartEnd(start, time.end(), false));
-            }
-        }
-    // Regardless, move on to the next possible time (Whole loop restarts) (set start to time.end())
-    start = time.end(); 
-    }
-    }
-  }
-    if (resultAfterOptional.isEmpty()) resultAfterOptional = result; 
-  }
+    windowStart = time.start(); 
 
-
-  // return result; 
-  return resultAfterOptional; 
-  }
-
-
-  
-/*
-  private Collection<TimeRange> optionalQuery(Collection<Event> events, MeetingRequest request) {
-    
-    // Find out how long they have to be at the meeting
-    long duration = request.getDuration(); 
-    // Set the collection of possible times to be empty
-    Collection<TimeRange> result = new ArrayList<TimeRange>(); 
-
-    // window referring to the opening and closing of the window of time where the meeting could be done
-    int windowStart = 0; 
-    int windowClose = 0; 
-
-    Object[] objectArray = events.toArray(); 
-    Event[] eventsOrderedByStart = new Event[objectArray.length]; 
-    Event[] eventsOrderedByEnd = new Event[objectArray.length];
-
-    for (int i = 0; i < events.toArray().length; i++) {
-      eventsOrderedByStart[i] = (Event) objectArray[i];  
-      eventsOrderedByEnd[i] = (Event) objectArray[i]; 
-    }
-
-    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START);
-    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END);
-    int startPointer = 0; 
-    int endPointer = 0; 
-    int nextMeetingEnd = 0; 
-    int nextMeetingStart = 0; 
-    Set<Event> problemEvents = new HashSet<>();
-
-
-
-    // Loop until all meetings have ended
-    while(endPointer < eventsOrderedByEnd.length) {
-    // What comes first, the end of a meeting or the start of one
-      nextMeetingEnd = eventsOrderedByEnd[endPointer].getWhen().end(); 
-      if (startPointer < eventsOrderedByStart.length) {
-      nextMeetingStart = eventsOrderedByStart[startPointer].getWhen().start(); 
-      }
-      if (startPointer == eventsOrderedByStart.length || nextMeetingEnd <= nextMeetingStart) {
-        if (problemEvents.contains(eventsOrderedByEnd[endPointer])) {
-          windowStart = nextMeetingEnd; 
-          problemEvents.remove(eventsOrderedByEnd[endPointer]); 
-        }
-        endPointer++; 
-      } else {
-          if (isEventImportantWithOptional(eventsOrderedByStart[startPointer], request)) {
-            windowClose = nextMeetingStart; 
-            if (problemEvents.isEmpty()) {
-              if ((windowClose - windowStart) >= duration) {
-                result.add(TimeRange.fromStartEnd(windowStart, windowClose, false)); 
-              }
-            }
-            problemEvents.add(eventsOrderedByStart[startPointer]); 
+    // Looping until there's no time left in this potential meeting time range, find times
+    // Where the most ammount of optional guests can come
+    while (windowStart != time.end()) { 
+      if (otr.getTime().end() < time.end()) { // If the number of free optional attendees changes before the end of the meeting
+        if (requestedMeetingDuration <= otr.getTime().end() - windowStart) { // Is there enough time for a meeting?
+          if (otr.getNumPeopleAvailable() > champ) { // Would this meeting time increase the amount of total attendees? 
+            optimalTimesForMeeting.clear(); 
+            champ = otr.getNumPeopleAvailable(); 
           }
-          startPointer++; 
-      }
+          if(otr.getNumPeopleAvailable() >= champ) { // Is this an optimal time? 
+            optimalTimesForMeeting.add(TimeRange.fromStartEnd(windowStart, otr.getTime().end(), false)); 
+          }
+        }
+        windowStart = otr.getTime().end(); 
+        otr = optionalRanges.remove(); 
+      } else { // If the end of this possible meeting time comes before the next change in the number of optional attendees
+          if (requestedMeetingDuration <= time.end() - windowStart) { // Is there enough time for a meeting?
+            if (otr.getNumPeopleAvailable() > champ) { // Would this meeting time increase the amount of total attendees?
+              optimalTimesForMeeting.clear();
+              champ = otr.getNumPeopleAvailable();
+            }
+            if (otr.getNumPeopleAvailable() >= champ) { // Is this an optimal time? 
+                optimalTimesForMeeting.add(TimeRange.fromStartEnd(windowStart, time.end(), false));
+            }
+          }
+          windowStart = time.end(); 
+        }
+    }
   }
-  if (windowStart < END_OF_DAY && (END_OF_DAY - windowStart) >= duration) {
-    result.add(TimeRange.fromStartEnd(windowStart, END_OF_DAY, false)); 
+  // If no time works when considering optional attendees, just use required guests
+  if (optimalTimesForMeeting.isEmpty()) optimalTimesForMeeting = timesForRequiredGuests; 
   }
 
-  return result; 
+  // return optimal times; 
+  return optimalTimesForMeeting; 
   }
-*/ 
+
   private Queue<OptionalTimeRange> optionalQueryHelper(Collection<Event> events, MeetingRequest request) {
     
-    // Set the collection of possible times to be empty
-    Queue<OptionalTimeRange> result = new LinkedList<>(); 
-
-    // window referring to the opening and closing of the window of time where the meeting could be done
-    int windowStart = 0; 
-    int windowClose = 0; 
+    Queue<OptionalTimeRange> timesForOptionalGuests = new LinkedList<>(); 
 
     Object[] objectArray = events.toArray(); 
     Event[] eventsOrderedByStart = new Event[objectArray.length]; 
@@ -328,51 +236,61 @@ public final class FindMeetingQuery {
       eventsOrderedByEnd[i] = (Event) objectArray[i]; 
     }
 
-    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START);
-    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END);
-    int startPointer = 0; 
-    int endPointer = 0; 
-    int nextMeetingEnd = 0; 
-    int nextMeetingStart = 0; 
-    int lastMarker = 0; 
+    Arrays.sort(eventsOrderedByStart, ORDER_EVENT_BY_START); // Events ordered by start time
+    Arrays.sort(eventsOrderedByEnd, ORDER_EVENT_BY_END); // Events ordered by end time
+    int startPointer = 0; // startPointer will help move through each Event in the eventsOrderedByStart array
+    int endPointer = 0; // endPointer will help move through each Event in the eventsOrderedByEnd array
+    int nextMeetingEndTime = 0; 
+    int nextMeetingStartTime = 0; 
+    int lastMarker = 0; // Functions like windowStart above
     Collection<String> optionalPeopleAvailable = new HashSet(request.getOptionalAttendees()); 
-    Set<Event> problemEvents = new HashSet<>();
+    Set<Event> problemEvents = new HashSet<>(); // Keeps track of the events which have relevant guests
+    HashMap<String, Integer> numCurrentMeetings = new HashMap<String, Integer>(); // Stores the number of meetings each attendee is currently at
+    for (String person : request.getOptionalAttendees()) {
+      numCurrentMeetings.put(person, 0); 
+    }
 
-
-
-    // Loop until all meetings have ended
+    // While there are meetings which haven't ended, this loop creates the optional time ranges 
+    // which are explained near the top of the class. 
     while(endPointer < eventsOrderedByEnd.length) {
-    // What comes first, the end of a meeting or the start of one
-      nextMeetingEnd = eventsOrderedByEnd[endPointer].getWhen().end(); 
+      nextMeetingEndTime = eventsOrderedByEnd[endPointer].getWhen().end(); 
       if (startPointer < eventsOrderedByStart.length) {
-      nextMeetingStart = eventsOrderedByStart[startPointer].getWhen().start(); 
+      nextMeetingStartTime = eventsOrderedByStart[startPointer].getWhen().start(); 
       }
-      if (startPointer == eventsOrderedByStart.length || nextMeetingEnd < nextMeetingStart) {
-        if (problemEvents.contains(eventsOrderedByEnd[endPointer])) {
-          result.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, nextMeetingEnd, false), optionalPeopleAvailable.size()));
+      if (startPointer == eventsOrderedByStart.length || nextMeetingEndTime <= nextMeetingStartTime) {
+        if (problemEvents.contains(eventsOrderedByEnd[endPointer])) { // If the event which just ended had any of our requested optional attendees
+          timesForOptionalGuests.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, nextMeetingEndTime, false), optionalPeopleAvailable.size()));
           for (String person : request.getOptionalAttendees()) {
-            if (eventsOrderedByEnd[endPointer].getAttendees().contains(person)) optionalPeopleAvailable.add(person); 
+            if (eventsOrderedByEnd[endPointer].getAttendees().contains(person)) { 
+              numCurrentMeetings.replace(person, numCurrentMeetings.get(person) - 1);
+              if (numCurrentMeetings.get(person) == 0) { 
+                  optionalPeopleAvailable.add(person); 
+                }
+            }
           }
           problemEvents.remove(eventsOrderedByEnd[endPointer]);  
-          lastMarker = nextMeetingEnd; 
+          lastMarker = nextMeetingEndTime; 
         }
         endPointer++; 
       } else {
-          if (isEventImportantWithOptional(eventsOrderedByStart[startPointer], request)) {
-            result.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, nextMeetingStart, false), optionalPeopleAvailable.size()));
+          if (isEventImportantWithOptional(eventsOrderedByStart[startPointer], request)) { // If this event has any of our requested attendees
+            if (lastMarker != nextMeetingStartTime) timesForOptionalGuests.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, nextMeetingStartTime, false), optionalPeopleAvailable.size()));
             for (String person : request.getOptionalAttendees()) {
-              if (eventsOrderedByStart[startPointer].getAttendees().contains(person)) optionalPeopleAvailable.remove(person); 
+              if (eventsOrderedByStart[startPointer].getAttendees().contains(person)) {
+                optionalPeopleAvailable.remove(person); 
+                numCurrentMeetings.replace(person, numCurrentMeetings.get(person) + 1);
+              }
             }   
             problemEvents.add(eventsOrderedByStart[startPointer]); 
-            lastMarker = nextMeetingStart;
+            lastMarker = nextMeetingStartTime;
           }
           startPointer++; 
       }
   }
   if (lastMarker != END_OF_DAY) {
-  result.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, END_OF_DAY, false), optionalPeopleAvailable.size())); 
+  timesForOptionalGuests.add(new OptionalTimeRange(TimeRange.fromStartEnd(lastMarker, END_OF_DAY, false), optionalPeopleAvailable.size())); 
   }
 
-  return result; 
+  return timesForOptionalGuests; 
   }
 }
