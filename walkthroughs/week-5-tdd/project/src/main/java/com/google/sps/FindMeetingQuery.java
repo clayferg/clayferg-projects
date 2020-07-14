@@ -71,14 +71,6 @@ public final class FindMeetingQuery {
       return false; 
   }
 
-  // Checks if anyone who is optional for the requested meeting is at the given event
-  private boolean isEventImportantWithOptional(Event event, MeetingRequest request) {
-    for (String person : request.getOptionalAttendees()) {
-        if (event.getAttendees().contains(person)) return true;
-    }
-      return false; 
-  }
-
   // While using request.getAttendees().isEmpty() to find if there were any required attendees worked for the tests,
   // It caused problems when used on the development server, so I made this method to compensate. 
   private boolean noRequiredAttendees(MeetingRequest request) {
