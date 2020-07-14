@@ -518,7 +518,8 @@ public final class FindMeetingQueryTest {
     // query finds the optimal times to maximize attendance. 
     // Events  : |----A---|                 |--A--|
     //                |--B--|                 |---B---|
-    //            |--C--|    |--C--|  
+    //            |--C--|    |-C-| 
+    //                          |-C-| 
     //                                  |-D-|   
     //                        |---E--|  
     // Day     : |------------------------------------|
@@ -549,7 +550,11 @@ public final class FindMeetingQueryTest {
                 Arrays.asList(PERSON_C)),
             new Event(
                 "Event 6",
-                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10, 30), TimeRange.getTimeInMinutes(13, 30), false),
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10, 30), TimeRange.getTimeInMinutes(12, 30), false),
+                Arrays.asList(PERSON_C)),
+            new Event(
+                "Event 6",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(11, 30), TimeRange.getTimeInMinutes(13, 30), false),
                 Arrays.asList(PERSON_C)),
             new Event(
                 "Event 7",
