@@ -571,4 +571,54 @@ public final class FindMeetingQueryTest {
 
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void eraseDuplicateAnswers() {
+    
+    // Ensure that algorithm does not return duplicate/overlapping times
+    // Events  : |----A---|                 |--A--|
+    //                |--B--|                 |---B---|
+    //                       |--C--| |--C--|  
+    // Day     : |------------------------------------|
+    // Options :                       |---|
+    // Note    : C is optional
+      
+    Collection<Event> events = 
+        Arrays.asList(
+            new Event(
+                "Event 1",
+                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.getTimeInMinutes(8, 30), false),
+                Arrays.asList(PERSON_A)),
+            new Event(
+                "Event 2",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(5, 30), TimeRange.getTimeInMinutes(9, 30), false),
+                Arrays.asList(PERSON_B)),
+            new Event(
+                "Event 3",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(17, 30), TimeRange.getTimeInMinutes(20, 30), false),
+                Arrays.asList(PERSON_A)),
+            new Event(
+                "Event 4",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(18, 00), TimeRange.END_OF_DAY, true),
+                Arrays.asList(PERSON_B)),
+            new Event(
+                "Event 5",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10,00), TimeRange.getTimeInMinutes(14, 30), false),
+                Arrays.asList(PERSON_C)),
+            new Event(
+                "Event 6",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(14, 45), TimeRange.getTimeInMinutes(17, 30), false),
+                Arrays.asList(PERSON_C)));
+        
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), 180);
+    request.addOptionalAttendee(PERSON_C); 
+    request.addOptionalAttendee(PERSON_D); 
+    request.addOptionalAttendee(PERSON_E); 
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected = 
+    Arrays.asList(
+        TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(9,30), TimeRange.getTimeInMinutes(17, 30), false));
+
+    Assert.assertEquals(expected, actual);
+  }
 }
