@@ -205,6 +205,18 @@ public final class FindMeetingQuery {
   // If no time works when considering optional attendees, just use required guests
   if (optimalTimesForMeeting.isEmpty()) optimalTimesForMeeting = timesForRequiredGuests; 
 
+  
+  ArrayList<TimeRange> duplicatesToRemove = new ArrayList<>(); 
+  for (TimeRange time : optimalTimesForMeeting) {
+    for (TimeRange otherTime : optimalTimesForMeeting) {
+      if (time == otherTime) continue; 
+      if (time.contains(otherTime)) {
+        duplicatesToRemove.add(otherTime); 
+      }
+    }
+  }
+  optimalTimesForMeeting.removeAll(duplicatesToRemove); 
+
   // return optimal times; 
   return optimalTimesForMeeting; 
   }
