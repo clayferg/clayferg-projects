@@ -159,10 +159,11 @@ public final class FindMeetingQuery {
           groupsToRemove.add(possibleGroup);
         }
       }
+      groups.removeAll(groupsToRemove);
+      groupsToRemove.clear(); 
       importantAttendees.clear();
       startPointer++;
     }
-    groups.removeAll(groupsToRemove);
     if (!groups.isEmpty()) {
       for (PotentialAttendeeList possibleGroup: groups) {
         possibleGroup.setEndTime(END_OF_DAY);
@@ -358,6 +359,9 @@ public final class FindMeetingQuery {
       result[i] = (PotentialAttendeeList) resultObjectArray[i];
     }
     Arrays.sort(result, ORDER_BY_SIZE);
+    for (int i = 0; i < result.length; i++) {
+      System.out.println(result[i]); 
+    }
     return result;
   }
 }
