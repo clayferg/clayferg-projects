@@ -584,6 +584,7 @@ public final class FindMeetingQueryTest {
     // Events  : |----A---|                 |--A--|
     //                |--B--|                 |---B---|
     //                       |--C--| |--C--|  
+    //                       |--C--|
     // Day     : |------------------------------------|
     // Options :                       |---|
     // Note    : C is optional
@@ -612,6 +613,10 @@ public final class FindMeetingQueryTest {
                 Arrays.asList(PERSON_C)),
             new Event(
                 "Event 6",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10,00), TimeRange.getTimeInMinutes(14, 30), false),
+                Arrays.asList(PERSON_C)),
+            new Event(
+                "Event 7",
                 TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(14, 45), TimeRange.getTimeInMinutes(17, 30), false),
                 Arrays.asList(PERSON_C)));
         
