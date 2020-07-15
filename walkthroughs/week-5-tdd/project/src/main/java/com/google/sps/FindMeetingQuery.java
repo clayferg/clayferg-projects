@@ -28,19 +28,25 @@ import java.io.*;
 public final class FindMeetingQuery {
   private final int END_OF_DAY = 24 * 60; // Total number of minutes in a day
   private PotentialAttendeeList[] possibleGroupsOfOptionalAttendees;
-  private Collection < TimeRange > optimalTimesForMeeting;
+  private Collection<TimeRange> optimalTimesForMeeting;
   private MeetingRequest request;
-  private Collection < TimeRange > timesForRequiredGuests;
+  private Collection<TimeRange> timesForRequiredGuests;
   private Event[] eventsOrderedByStart;
   private Event[] eventsOrderedByEnd;
-  private Collection < Event > events; 
+  private Collection<Event> events; 
+  private int startPointer; 
+  private int endPointer; 
+  private int nextMeetingEndTime;
+  private int nextMeetingStartTime;
+  private HashMap<String, Integer> numCurrentMeetings;
+  ArrayList<PotentialAttendeeList> potentialAttendeeLists;
   
   // a representation of a group of potential optional attendees to the meeting
   // and the time at which they could come
   private static class PotentialAttendeeList {
     public int startTime;
     public int endTime;
-    public Set < String > people;
+    public Set<String> people;
     public PotentialAttendeeList(int startTime, Set people) {
       this.startTime = startTime;
       this.people = new HashSet(people);
@@ -87,7 +93,7 @@ public final class FindMeetingQuery {
     }
   }
 
-  private boolean newPossibleAttendees(Collection<String> eventAttendees, HashMap<String, Integer> numCurrentMeetings) {
+  private boolean newPossibleAttendees(Collection<String> eventAttendees) {
     for (String attendee: eventAttendees) {
       if (numCurrentMeetings.containsKey(attendee) && numCurrentMeetings.get(attendee) != 0) {
         numCurrentMeetings.put(attendee, numCurrentMeetings.get(attendee) - 1);
@@ -97,56 +103,41 @@ public final class FindMeetingQuery {
     return false; 
   }
 
-  private boolean oldMeetingEndBeforeNewStart(int nextMeetingEndTime, int nextMeetingStartTime, int startPointer) {
-      return startPointer == eventsOrderedByStart.length || 
-        nextMeetingEndTime <= nextMeetingStartTime;
-  }
-
-  // Creates Potential Attendee Lists to find times with most optional
-  // guests. 
-  private void findPotentialGroupsOfOptionalAttendees(ArrayList < PotentialAttendeeList > resultsArrayList) {
-    int startPointer = 0;
-    int endPointer = 0;
-    int nextMeetingEndTime = 0;
-    int nextMeetingStartTime = 0;
-    Set < String > importantAttendees = new HashSet < > ();
-    Set < PotentialAttendeeList > groups = new HashSet < > ();
-    HashMap < String, Integer > numCurrentMeetings = new HashMap < String, Integer > ();
-    for (String person: request.getOptionalAttendees()) {
-      numCurrentMeetings.put(person, 0);
-    }
-    ArrayList < PotentialAttendeeList > groupsToRemove = new ArrayList < > ();
-    groups.add(new PotentialAttendeeList(0, new HashSet(request
-      .getOptionalAttendees())));
-    while (endPointer < eventsOrderedByEnd.length) {
+  private boolean oldMeetingEndBeforeNewStart() {
       nextMeetingEndTime = eventsOrderedByEnd[endPointer].getWhen().end();
       if (startPointer < eventsOrderedByStart.length) {
         nextMeetingStartTime = eventsOrderedByStart[startPointer].getWhen()
           .start();
       }
-      if (oldMeetingEndBeforeNewStart(nextMeetingEndTime, nextMeetingStartTime, startPointer)) {
-        if (newPossibleAttendees(eventsOrderedByEnd[endPointer].getAttendees(), numCurrentMeetings)) {
-          Set < String > availablePeople = new HashSet < > ();
-          for (String attendee: request.getOptionalAttendees()) {
-            if (numCurrentMeetings.get(attendee) == 0) availablePeople.add(
-              attendee);
-          }
-          PotentialAttendeeList newGroup = new PotentialAttendeeList(
-            nextMeetingEndTime, availablePeople);
-          groups.add(newGroup);
-        }
-        endPointer++;
-        continue;
-      }
-      for (String attendee: eventsOrderedByStart[startPointer]
-        .getAttendees()) {
-        if (request.getOptionalAttendees().contains(attendee)) {
-          importantAttendees.add(attendee);
-          numCurrentMeetings.put(attendee, numCurrentMeetings.get(attendee) +
+      return startPointer == eventsOrderedByStart.length || 
+        nextMeetingEndTime <= nextMeetingStartTime;
+  }
+
+  private HashSet<String> addAllFreeAttendees() {
+    HashSet<String> availablePeople = new HashSet<>();   
+    for (String attendee: request.getOptionalAttendees()) {
+      if (numCurrentMeetings.get(attendee) == 0) availablePeople.add(
+        attendee);
+    }
+    return availablePeople; 
+  }
+
+  private Set<String> updateNumCurrentMeetings() {
+    Set<String> importantAttendees = new HashSet<>();
+    for (String attendee: eventsOrderedByStart[startPointer]
+      .getAttendees()) {
+      if (request.getOptionalAttendees().contains(attendee)) {
+        importantAttendees.add(attendee);
+        numCurrentMeetings.put(attendee, numCurrentMeetings.get(attendee) +
             1);
-        }
       }
-      for (PotentialAttendeeList possibleGroup: groups) {
+    }
+    return importantAttendees; 
+  }
+
+  private void addPotentialGroupsToArrayList(Set<PotentialAttendeeList> groups, 
+    ArrayList<PotentialAttendeeList> groupsToRemove, Set<String> importantAttendees) {
+    for (PotentialAttendeeList possibleGroup: groups) {
         possibleGroup.setEndTime(nextMeetingStartTime);
         PotentialAttendeeList pastVersion = new PotentialAttendeeList(
           possibleGroup);
@@ -157,22 +148,50 @@ public final class FindMeetingQuery {
         }
         if (pastVersion.people.size() > possibleGroup.people.size() &&
           pastVersion.getDuration() >= request.getDuration()) {
-          resultsArrayList.add(pastVersion);
+          potentialAttendeeLists.add(pastVersion);
         }
         if (possibleGroup.people.size() == 0) {
           groupsToRemove.add(possibleGroup);
         }
       }
+  }
+
+  // Creates Potential Attendee Lists to find times with most optional
+  // guests. 
+  private void findPotentialGroupsOfOptionalAttendees() {
+    startPointer = 0;
+    endPointer = 0;
+    nextMeetingEndTime = 0;
+    nextMeetingStartTime = 0;
+    Set<PotentialAttendeeList> groups = new HashSet<>();
+    numCurrentMeetings = new HashMap<String, Integer>();
+    for (String person: request.getOptionalAttendees()) {
+      numCurrentMeetings.put(person, 0);
+    }
+    ArrayList<PotentialAttendeeList> groupsToRemove = new ArrayList<>();
+    groups.add(new PotentialAttendeeList(0, new HashSet(request
+      .getOptionalAttendees())));
+    while (endPointer < eventsOrderedByEnd.length) {
+      if (oldMeetingEndBeforeNewStart()) {
+        if (newPossibleAttendees(eventsOrderedByEnd[endPointer].getAttendees())) {
+          Set<String> availablePeople = addAllFreeAttendees();
+          PotentialAttendeeList newGroup = new PotentialAttendeeList(
+            nextMeetingEndTime, availablePeople);
+          groups.add(newGroup);
+        }
+        endPointer++;
+        continue;
+      }
+      addPotentialGroupsToArrayList(groups, groupsToRemove, updateNumCurrentMeetings()); 
       groups.removeAll(groupsToRemove);
       groupsToRemove.clear(); 
-      importantAttendees.clear();
       startPointer++;
     }
     if (!groups.isEmpty()) {
       for (PotentialAttendeeList possibleGroup: groups) {
         possibleGroup.setEndTime(END_OF_DAY);
         if (possibleGroup.getDuration() > request.getDuration()) {
-          resultsArrayList.add(possibleGroup);
+          potentialAttendeeLists.add(possibleGroup);
         }
       }
     }
@@ -205,7 +224,7 @@ public final class FindMeetingQuery {
 
   // Method for removing the overlapping times from our returned suggested times 
   private void removeOverlaps() {
-    ArrayList < TimeRange > duplicatesToRemove = new ArrayList < > ();
+    ArrayList<TimeRange> duplicatesToRemove = new ArrayList<>();
     for (TimeRange time: optimalTimesForMeeting) {
       for (TimeRange otherTime: optimalTimesForMeeting) {
         if (time == otherTime) continue;
@@ -220,20 +239,14 @@ public final class FindMeetingQuery {
   private void findPotentialTimesForRequiredAttendees() {
     int windowStart = 0;
     int windowClose = 0;
-    int startPointer = 0;
-    int endPointer = 0;
-    int nextMeetingEndTime = 0;
-    int nextMeetingStartTime = 0;
-    Set < Event > problemEvents = new HashSet < >
-      (); // Keeps track of the events which have relevant guests
+    startPointer = 0;
+    endPointer = 0;
+    nextMeetingEndTime = 0;
+    nextMeetingStartTime = 0;
+    // problemEvents keeps track of the events which have relevant guests
+    Set<Event> problemEvents = new HashSet<>(); 
     while (endPointer < eventsOrderedByEnd.length) {
-      nextMeetingEndTime = eventsOrderedByEnd[endPointer].getWhen().end();
-      if (startPointer < eventsOrderedByStart.length) {
-        nextMeetingStartTime = eventsOrderedByStart[startPointer].getWhen()
-          .start();
-      }
-      if (startPointer == eventsOrderedByStart.length || nextMeetingEndTime <=
-        nextMeetingStartTime) {
+      if (oldMeetingEndBeforeNewStart()) {
         if (problemEvents.contains(eventsOrderedByEnd[endPointer])) {
           windowStart = nextMeetingEndTime;
           problemEvents.remove(eventsOrderedByEnd[endPointer]);
@@ -273,8 +286,8 @@ public final class FindMeetingQuery {
   }
 
   /** A comparator for sorting events by their start time in ascending order. */
-  private static final Comparator < Event > ORDER_EVENT_BY_START =
-    new Comparator < Event > () {
+  private static final Comparator<Event> ORDER_EVENT_BY_START =
+    new Comparator<Event> () {
       @Override
       public int compare(Event a, Event b) {
         return Long.compare(a.getWhen().start(), b.getWhen().start());
@@ -282,8 +295,8 @@ public final class FindMeetingQuery {
     };
 
   /** A comparator for sorting events by their end time in ascending order. */
-  private static final Comparator < Event > ORDER_EVENT_BY_END =
-    new Comparator < Event > () {
+  private static final Comparator<Event> ORDER_EVENT_BY_END =
+    new Comparator<Event> () {
       @Override
       public int compare(Event a, Event b) {
         return Long.compare(a.getWhen().end(), b.getWhen().end());
@@ -291,20 +304,20 @@ public final class FindMeetingQuery {
     };
 
   /** A comparator for sorting potential attendee lists by their size (largest first). */
-  private static final Comparator < PotentialAttendeeList > ORDER_BY_SIZE =
-    new Comparator < PotentialAttendeeList > () {
+  private static final Comparator<PotentialAttendeeList> ORDER_BY_SIZE =
+    new Comparator<PotentialAttendeeList> () {
       @Override
       public int compare(PotentialAttendeeList a, PotentialAttendeeList b) {
         return -Integer.compare(a.people.size(), b.people.size());
       }
     };
 
-  public Collection < TimeRange > query(Collection < Event > events,
+  public Collection<TimeRange> query(Collection<Event> events,
     MeetingRequest request) {
     
     this.request = request;
     this.events = events; 
-    timesForRequiredGuests = new ArrayList < TimeRange > ();
+    timesForRequiredGuests = new ArrayList<TimeRange>();
     
     Object[] objectArray = events.toArray();
     eventsOrderedByStart = new Event[objectArray.length];
@@ -320,7 +333,7 @@ public final class FindMeetingQuery {
     
     findPotentialTimesForRequiredAttendees();
     possibleGroupsOfOptionalAttendees = findPotentialOptionalAttendees();
-    optimalTimesForMeeting = new ArrayList < > ();
+    optimalTimesForMeeting = new ArrayList<>();
     if ((this.noRequiredAttendees() || request.getAttendees()
       .isEmpty()) && !request.getOptionalAttendees().isEmpty()) { 
       onlyOptionalAttendees();
@@ -335,12 +348,11 @@ public final class FindMeetingQuery {
     return optimalTimesForMeeting;
   }
   private PotentialAttendeeList[] findPotentialOptionalAttendees() {
-    ArrayList < PotentialAttendeeList > resultsArrayList = new ArrayList < >
-      ();
+    potentialAttendeeLists = new ArrayList<>();
     
-    findPotentialGroupsOfOptionalAttendees(resultsArrayList);
+    findPotentialGroupsOfOptionalAttendees();
     
-    Object[] resultObjectArray = resultsArrayList.toArray();
+    Object[] resultObjectArray = potentialAttendeeLists.toArray();
     PotentialAttendeeList[] result = new PotentialAttendeeList[
       resultObjectArray.length];
     for (int i = 0; i < resultObjectArray.length; i++) {
