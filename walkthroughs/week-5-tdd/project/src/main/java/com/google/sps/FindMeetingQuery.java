@@ -159,10 +159,11 @@ public final class FindMeetingQuery {
           groupsToRemove.add(possibleGroup);
         }
       }
+      groups.removeAll(groupsToRemove);
+      groupsToRemove.clear(); 
       importantAttendees.clear();
       startPointer++;
     }
-    groups.removeAll(groupsToRemove);
     if (!groups.isEmpty()) {
       for (PotentialAttendeeList possibleGroup: groups) {
         possibleGroup.setEndTime(END_OF_DAY);
