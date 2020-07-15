@@ -583,9 +583,10 @@ public final class FindMeetingQueryTest {
     // Ensure that algorithm does not return duplicate/overlapping times
     // Events  : |----A---|                 |--A--|
     //                |--B--|                 |---B---|
-    //                       |--C--| |--C--|  
+    //                       |--C--| |--C--|
+    //                       |--C--|  
     // Day     : |------------------------------------|
-    // Options :                       |---|
+    // Options :            |--------------|
     // Note    : C is optional
       
     Collection<Event> events = 
@@ -606,6 +607,10 @@ public final class FindMeetingQueryTest {
                 "Event 4",
                 TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(18, 00), TimeRange.END_OF_DAY, true),
                 Arrays.asList(PERSON_B)),
+            new Event(
+                "Event 5",
+                TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10,00), TimeRange.getTimeInMinutes(14, 30), false),
+                Arrays.asList(PERSON_C)),
             new Event(
                 "Event 5",
                 TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(10,00), TimeRange.getTimeInMinutes(14, 30), false),
