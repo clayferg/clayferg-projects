@@ -235,7 +235,6 @@ public final class FindMeetingQuery {
     }
     optimalTimesForMeeting.removeAll(duplicatesToRemove);
   }
-
   private void findPotentialTimesForRequiredAttendees() {
     int windowStart = 0;
     int windowClose = 0;
@@ -256,11 +255,11 @@ public final class FindMeetingQuery {
       }
       if (isEventImportant(eventsOrderedByStart[startPointer])) {
         windowClose = nextMeetingStartTime;
-        if (problemEvents.isEmpty()) {
-          if ((windowClose - windowStart) >= request.getDuration()) {
-            timesForRequiredGuests.add(TimeRange.fromStartEnd(windowStart,
-              windowClose, false));
-          }
+        if (isEventImportant(eventsOrderedByStart[startPointer]) && 
+          problemEvents.isEmpty() && 
+          (nextMeetingStartTime - windowStart) >= request.getDuration()) {
+          timesForRequiredGuests.add(TimeRange.fromStartEnd(windowStart,
+            windowClose, false));
         }
         problemEvents.add(eventsOrderedByStart[startPointer]);
       }
@@ -273,8 +272,9 @@ public final class FindMeetingQuery {
     }
   }
 
-  // While using request.getAttendees().isEmpty() to find if there were any required attendees worked for the tests,
-  // It caused problems when used on the development server, so I made this method to compensate. 
+  // While using request.getAttendees().isEmpty() to find if there were any 
+  // required attendees worked for the tests, it caused problems when used on 
+  // the development server, so I made this method to compensate. 
   private boolean noRequiredAttendees() {
     boolean noRequiredAttendees = false;
     for (String person: request.getAttendees()) {
