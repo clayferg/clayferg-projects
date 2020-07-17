@@ -14,6 +14,9 @@
 /**
  * Shows random facts about me until there are none left
  */
+var vidsToPlay = []; 
+var vidPointer = 0; 
+
 const facts = [
   'My favorite TV shows are Atlanta (FX), Rick and Morty (AS), and Bojack' +
   'Horseman (Netflix). You do not have to watch them,' +
@@ -26,6 +29,62 @@ const facts = [
   'Mixed Bag: favorite time - 9:30 A.M., favorite food - steak' +
   '(oops, you knew that already), favorite color - blue!',
 ];
+
+  function loadClient() {
+    gapi.client.setApiKey("AIzaSyCeGsV9eK6jyyzkK1L9NwYju-IRuZDQYbQ");
+    return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+        .then(function() { console.log("GAPI client loaded for API"); },
+              function(err) { console.error("Error loading GAPI client for API", err); });
+  }
+
+  function playVid() {
+    document.getElementById('vid').src = "https://www.youtube.com/embed/" + vidsToPlay[vidPointer] + "?autoplay=1"; 
+    if (vidPointer + 1 == vidsToPlay.length) {
+      vidPointer = -1; 
+    }
+    vidPointer++;  
+  }
+
+  function myFunction(item) {
+      item = item.contentDetails.videoId; 
+    vidsToPlay.push(item); 
+  }
+
+ function listVideosID(id) {
+    return gapi.client.youtube.playlistItems.list({
+      "part": [
+        "snippet,contentDetails"
+      ],
+      "maxResults": 25,
+      "playlistId": id
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                response.result.items.forEach(myFunction);
+                console.log(vidsToPlay);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+  function execute() {
+    return gapi.client.youtube.playlists.list({
+      "part": [
+        "snippet,contentDetails"
+      ],
+      "channelId": "UC-9-kyTW8ZkZNDHQJ6FgpwQ",
+      "maxResults": 50
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                const playlists = response.result.items; 
+                listVideosID(playlists[0].id); 
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  gapi.load("client:auth2", function() {
+    gapi.auth2.init({client_id: "979702058084-q6c08ls4rdj12dhjdui7gfb8fgvantut.apps.googleusercontent.com"});
+  });
 
 function addFavoriteThing() {
   const factContainer = document.getElementById('greeting-container');
