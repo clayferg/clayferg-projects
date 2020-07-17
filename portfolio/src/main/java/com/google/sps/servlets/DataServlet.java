@@ -90,7 +90,7 @@ public class DataServlet extends HttpServlet {
       String commentText = (String) entity.getProperty("Comment");
       Comment comment = new Comment(id, timestamp, username, commentText);
       comments.add(comment);
-      maxComments--; 
+      maxComments--;
     }
 
     response.setContentType("application/json;");
